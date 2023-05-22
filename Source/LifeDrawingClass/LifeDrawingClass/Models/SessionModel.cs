@@ -22,6 +22,8 @@ namespace LifeDrawingClass.Models
     using System.Collections.Generic;
     using System.ComponentModel;
     using CommunityToolkit.Mvvm.ComponentModel;
+    using LifeDrawingClass.Business;
+    using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core;
 
     public class SessionModel: ObservableObject

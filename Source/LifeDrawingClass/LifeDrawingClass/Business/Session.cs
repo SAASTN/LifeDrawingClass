@@ -17,11 +17,12 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *******************************************************************************
 
-namespace LifeDrawingClass.Core
+namespace LifeDrawingClass.Business
 {
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
+    using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Image;
 
     public class Session: ISession

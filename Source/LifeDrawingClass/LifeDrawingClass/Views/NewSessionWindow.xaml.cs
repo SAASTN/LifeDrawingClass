@@ -19,6 +19,8 @@
 
 namespace LifeDrawingClass.Views
 {
+    using LifeDrawingClass.Business;
+    using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core;
     using LifeDrawingClass.Models;
     using LifeDrawingClass.ViewModels;

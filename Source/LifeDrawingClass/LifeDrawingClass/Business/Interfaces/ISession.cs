@@ -17,7 +17,7 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Core
+namespace LifeDrawingClass.Business.Interfaces
 {
     using System.Collections.Generic;
     using System.ComponentModel;
