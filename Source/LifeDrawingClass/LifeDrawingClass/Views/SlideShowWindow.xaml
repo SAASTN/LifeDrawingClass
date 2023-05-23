@@ -1,12 +1,13 @@
-﻿<Window x:Class="LifeDrawingClass.Views.SlideShowWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LifeDrawingClass" xmlns:viewmodels="clr-namespace:LifeDrawingClass.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:SlideShowViewModel}"
-        mc:Ignorable="d"
-        Title="SlideShowWindow" Height="450" Width="800">
+﻿<mah:MetroWindow x:Class="LifeDrawingClass.Views.SlideShowWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+                 xmlns:local="clr-namespace:LifeDrawingClass" xmlns:viewmodels="clr-namespace:LifeDrawingClass.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:SlideShowViewModel}"
+                 mc:Ignorable="d"
+                 Title="SlideShowWindow" Height="450" Width="800">
     <Grid>
             <Image Source="{Binding CurrentImagePath}" Stretch="Uniform" />
     </Grid>
-</Window>
+</mah:MetroWindow>
