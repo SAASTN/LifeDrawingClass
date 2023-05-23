@@ -15,16 +15,14 @@
 // 
 //   You should have received a copy of the GNU General Public License
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
-// *******************************************************************************
+// *****************************************************************************
 
 namespace LifeDrawingClass.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel;
     using CommunityToolkit.Mvvm.ComponentModel;
-    using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
-    using LifeDrawingClass.Core;
 
     public class SessionModel: ObservableObject
 
@@ -84,6 +82,8 @@ namespace LifeDrawingClass.Models
 
         public void AddPaths(string[] fileNames) =>
             this._session.AddPaths(fileNames);
+
+        public void StartSession() => this._session.StartSession();
 
         #endregion
 

@@ -23,12 +23,20 @@ namespace LifeDrawingClass.Core.Image
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Runtime.Serialization;
 
-    internal class ImageList : List<string>
+    [DataContract]
+    internal class ImageList
     {
         #region Constants & Statics
 
         internal static readonly HashSet<string> Extensions;
+
+        #endregion
+
+        #region Properties & Fields - Non-Public
+
+        [DataMember] private List<string> _paths = new();
 
         #endregion
 
@@ -39,21 +47,34 @@ namespace LifeDrawingClass.Core.Image
             Extensions = new HashSet<string> { ".png", ".bmp", ".jpg", ".jpeg" };
         }
 
+        public ImageList()
+        {
+        }
+
+        public ImageList(ICollection<string> items)
+        {
+            this.AddRange(items);
+        }
+
         #endregion
 
         #region Methods - Public
 
         #region Methods Other
 
+        public IReadOnlyList<string> AsList() => this._paths;
+
         internal void AddRange(ICollection<string> newItems)
         {
-            base.AddRange(newItems.Where(np => !this.Contains(np)));
-            this.Sort();
+            this._paths.AddRange(newItems.Where(np => !this._paths.Contains(np)));
+            this._paths.Sort();
         }
 
 
         internal void ImportFolder(string path, bool subFolders) =>
             this.AddRange(FindImageFilesInFolder(path, subFolders));
+
+        public void Clear() => this._paths.Clear();
 
         #endregion
 

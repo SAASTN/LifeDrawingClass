@@ -15,31 +15,43 @@
 // 
 //   You should have received a copy of the GNU General Public License
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
-// *******************************************************************************
+// *****************************************************************************
 
 namespace LifeDrawingClass.Business
 {
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Runtime.Serialization;
     using LifeDrawingClass.Business.Interfaces;
+    using LifeDrawingClass.Core.Configuration;
     using LifeDrawingClass.Core.Image;
+    using LifeDrawingClass.Core.Serialization;
 
+    [DataContract]
     public class Session: ISession
     {
         #region Properties & Fields - Non-Public
 
-        private readonly ImageList _imageList = new();
+        [DataMember] private ImageList _imageList;
+
         private int _currentSegmentIndex;
 
         #endregion
 
         #region Properties Impl - Public
 
-        public IReadOnlyList<string> ImagePaths => this._imageList;
-        public int Interval { get; set; }
+        public IReadOnlyList<string> ImagePaths
+        {
+            get => (this._imageList ??= new ImageList()).AsList();
+            set => this._imageList = new ImageList(value.ToList());
+        }
+
+        [DataMember] public int Interval { get; set; }
 
         /// <inheritdoc />
+        [DataMember]
         public int CurrentSegmentIndex
         {
             get => this._currentSegmentIndex;
@@ -55,6 +67,9 @@ namespace LifeDrawingClass.Business
         #region Methods - Public
 
         #region Methods Impl
+
+        /// <inheritdoc />
+        public void SerializeToXml(string fileName) => XmlSerializationUtils.SerializeToXml(this, fileName);
 
         public void ImportFolder(string path, bool importSubfolders)
         {
@@ -75,6 +90,12 @@ namespace LifeDrawingClass.Business
             this.OnPropertyChanged(nameof(this.ImagePaths));
         }
 
+        public void StartSession()
+        {
+            this.SerializeToXml(Configurator.GetLastSessionFileName());
+            this.StartSegment(0);
+        }
+
         #endregion
 
         #endregion
@@ -85,6 +106,8 @@ namespace LifeDrawingClass.Business
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        private void StartSegment(int segmentIndex) => this.CurrentSegmentIndex = segmentIndex;
 
         #endregion
 

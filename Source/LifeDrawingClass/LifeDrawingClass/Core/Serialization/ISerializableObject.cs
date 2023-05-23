@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISession.cs
+//  ISerializableObject.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,20 +17,10 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Business.Interfaces
+namespace LifeDrawingClass.Core.Serialization
 {
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using LifeDrawingClass.Core.Serialization;
-
-    public interface ISession: INotifyPropertyChanged, ISerializableObject
+    public interface ISerializableObject
     {
-        IReadOnlyList<string> ImagePaths { get; }
-        int CurrentSegmentIndex { get; }
-        int Interval { get; set; }
-        void ImportFolder(string path, bool importSubfolders);
-        void ClearPaths();
-        void AddPaths(string[] fileNames);
-        void StartSession();
+        void SerializeToXml(string fileName);
     }
 }

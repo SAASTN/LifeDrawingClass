@@ -45,6 +45,7 @@ namespace LifeDrawingClass.ViewModels
             };
             timer.Tick += this.Timer_Tick;
             timer.Start();
+            this._sessionModel.StartSession();
         }
 
         #endregion

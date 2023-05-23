@@ -19,9 +19,12 @@
 
 namespace LifeDrawingClass.Views
 {
+    using System;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
-    using LifeDrawingClass.Core;
+    using LifeDrawingClass.Core.Configuration;
+    using LifeDrawingClass.Core.Log;
+    using LifeDrawingClass.Core.Serialization;
     using LifeDrawingClass.Models;
     using LifeDrawingClass.ViewModels;
 
@@ -46,11 +49,18 @@ namespace LifeDrawingClass.Views
 
         private static SessionModel GetSessionModel()
         {
-            ISession session = new Session()
+            string lastSessionFileName = Configurator.GetLastSessionFileName();
+            ISession session;
+            try
             {
-                Interval = 1000
-            };
-            session.ImportFolder(@"..\..\..\SampleGallery\", false);
+                session = XmlSerializationUtils.DeserializeFromXml<Session>(lastSessionFileName);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Can not load last session.", e);
+                session = new Session();
+            }
+
             return new SessionModel(session);
         }
 
