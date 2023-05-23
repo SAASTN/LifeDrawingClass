@@ -19,7 +19,9 @@
 
 namespace LifeDrawingClass.ViewModels
 {
+    using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;
@@ -35,6 +37,23 @@ namespace LifeDrawingClass.ViewModels
     {
         #region Properties & Fields - Non-Public
 
+        /// <summary>
+        ///     Key is the name of property of th <see cref="SessionModel" /> instance, and value is the name of property of the
+        ///     <see cref="NewSessionViewModel" /> instance.
+        ///     When <see cref="SessionModel" /> gets notified that one of properties of its <see cref="SessionModel" /> has
+        ///     change, it
+        ///     notifies its View by calling
+        ///     <see cref="ObservableObject.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)" /> with the name of
+        ///     its own property.
+        /// </summary>
+        private readonly Dictionary<string, string> _sessionModelPropertyBindings = new()
+        {
+            {
+                nameof(Models.SessionModel.CurrentSegmentIndex), nameof(Models.SessionModel.CurrentSegmentIndex)
+            }, // not bound yet
+            { nameof(Models.SessionModel.ImagePaths), nameof(ImagePaths) }
+        };
+
         private ICommand _clearPathsCommand;
         private ICommand _addPathsCommand;
         private ICommand _addPathsFromFolderCommand;
@@ -47,6 +66,7 @@ namespace LifeDrawingClass.ViewModels
         public NewSessionViewModel(SessionModel sessionModel)
         {
             this.SessionModel = sessionModel;
+            sessionModel.PropertyChanged += this.SessionModelOnPropertyChanged;
         }
 
         #endregion
@@ -69,6 +89,12 @@ namespace LifeDrawingClass.ViewModels
         #region Methods - Non-Public
 
         #region Methods Other
+
+        private void SessionModelOnPropertyChanged(object sender, PropertyChangedEventArgs e) =>
+            this.OnPropertyChanged(e.PropertyName != null
+                ? this._sessionModelPropertyBindings[e.PropertyName] ??
+                  throw new NullReferenceException("Unknown property name.")
+                : null);
 
         private void StartSession()
         {
@@ -97,6 +123,7 @@ namespace LifeDrawingClass.ViewModels
             if (result == true)
             {
                 this.SessionModel.AddPaths(openFileDialog.FileNames);
+                this.OnPropertyChanged(nameof(this.ImagePaths));
             }
         }
 
