@@ -7,9 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\Graphics\Icons8\Png\icons8-add-folder-32.png" />
+    <None Remove="Views\Graphics\Icons8\Png\icons8-add-photo-gallery-32.png" />
+    <None Remove="Views\Graphics\Icons8\Png\icons8-remove-photo-gallery-32.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="MahApps.Metro.IconPacks.FeatherIcons" Version="4.11.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\Graphics\Icons8\Png\icons8-add-folder-32.png" />
+    <Resource Include="Views\Graphics\Icons8\Png\icons8-add-photo-gallery-32.png" />
+    <Resource Include="Views\Graphics\Icons8\Png\icons8-remove-photo-gallery-32.png" />
   </ItemGroup>
 
 </Project>

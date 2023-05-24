@@ -27,6 +27,7 @@ namespace LifeDrawingClass.ViewModels
     using System.Windows.Input;
     using CommunityToolkit.Mvvm.ComponentModel;
     using CommunityToolkit.Mvvm.Input;
+    using ControlzEx.Theming;
     using LifeDrawingClass.Core.Image;
     using LifeDrawingClass.Models;
     using LifeDrawingClass.Views;
@@ -58,6 +59,9 @@ namespace LifeDrawingClass.ViewModels
         private ICommand _addPathsCommand;
         private ICommand _addPathsFromFolderCommand;
         private ICommand _startSessionCommand;
+        private ICommand _alterThemCommand;
+
+        private bool _darkThemSelected = true;
 
         #endregion
 
@@ -82,13 +86,25 @@ namespace LifeDrawingClass.ViewModels
         public ICommand AddPathsFromFolderCommand =>
             this._addPathsFromFolderCommand ??= new RelayCommand(this.AddPathsFromFolder);
 
+        public ICommand AlterThemeCommand => this._alterThemCommand ??= new RelayCommand(this.AlterTheme);
+
         public string ImagePaths => string.Join("\n", this.SessionModel.ImagePaths);
+        public Visibility LightThemeButtonVisible => this._darkThemSelected ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility DarkThemeButtonVisible => this._darkThemSelected ? Visibility.Collapsed : Visibility.Visible;
 
         #endregion
 
         #region Methods - Non-Public
 
         #region Methods Other
+
+        private void AlterTheme()
+        {
+            this._darkThemSelected = !this._darkThemSelected;
+            ThemeManager.Current.ChangeTheme(Application.Current, this._darkThemSelected ? "Dark.Blue" : "Light.Blue");
+            this.OnPropertyChanged(nameof(this.LightThemeButtonVisible));
+            this.OnPropertyChanged(nameof(this.DarkThemeButtonVisible));
+        }
 
         private void SessionModelOnPropertyChanged(object sender, PropertyChangedEventArgs e) =>
             this.OnPropertyChanged(e.PropertyName != null

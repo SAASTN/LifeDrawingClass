@@ -1,0 +1,13 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Image
+        x:Key="Graphics.Icons8.Png.32.RemoveAllPaths"
+        Source="Views/Graphics/Icons8/Png/icons8-remove-photo-gallery-32.png" />
+    <Image
+        x:Key="Graphics.Icons8.Png.32.AddPaths"
+        Source="Views/Graphics/Icons8/Png/icons8-add-photo-gallery-32.png" />
+    <Image
+        x:Key="Graphics.Icons8.Png.32.AddFolder"
+        Source="Views/Graphics/Icons8/Png/icons8-add-folder-32.png" />
+</ResourceDictionary>

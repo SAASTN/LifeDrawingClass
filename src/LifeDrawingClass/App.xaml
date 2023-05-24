@@ -1,18 +1,63 @@
-﻿<Application x:Class="LifeDrawingClass.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:LifeDrawingClass"
-             StartupUri="Views/NewSessionWindow.xaml">
+﻿<Application
+    x:Class="LifeDrawingClass.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    StartupUri="Views/Windows/NewSessionWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- MahApps.Metro resource dictionaries. Make sure that all file names are Case Sensitive! -->
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <!-- Theme setting -->
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
+                <ResourceDictionary
+                    Source="Graphics.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <system:Double
+                x:Key="CommonFontSize">16</system:Double>
+            <Thickness
+                x:Key="ControlMargin">5 5 5 0</Thickness>
+            <Thickness
+                x:Key="BottomControlMargin">5 5 5 5</Thickness>
+
+
+            <Style
+                x:Key="DefaultButtonStyle"
+                BasedOn="{StaticResource MahApps.Styles.Button}"
+                TargetType="{x:Type Button}">
+                <Setter
+                    Property="FontSize"
+                    Value="{StaticResource CommonFontSize}" />
+                <Setter
+                    Property="FontWeight"
+                    Value="Normal" />
+                <Setter
+                    Property="mah:ControlsHelper.ContentCharacterCasing"
+                    Value="Normal" />
+            </Style>
+            <Style
+                x:Key="DefaultTextBoxStyle"
+                BasedOn="{StaticResource MahApps.Styles.TextBox}"
+                TargetType="{x:Type TextBox}">
+                <Setter
+                    Property="FontSize"
+                    Value="{StaticResource CommonFontSize}" />
+            </Style>
+            <Style
+                x:Key="DefaultTextBlockStyle"
+                BasedOn="{StaticResource MahApps.Styles.TextBlock}"
+                TargetType="{x:Type TextBlock}">
+                <Setter
+                    Property="FontSize"
+                    Value="{StaticResource CommonFontSize}" />
+            </Style>
         </ResourceDictionary>
+
     </Application.Resources>
 </Application>
