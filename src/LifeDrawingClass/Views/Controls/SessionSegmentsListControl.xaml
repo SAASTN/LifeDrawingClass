@@ -1,0 +1,77 @@
+﻿<UserControl
+    x:Class="LifeDrawingClass.Views.Controls.SessionSegmentsListControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:LifeDrawingClass.Views.Controls"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    mc:Ignorable="d"
+    d:DesignHeight="450"
+    d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style
+                x:Key="SegmentStyle"
+                TargetType="{x:Type Border}">
+                <Setter
+                    Property="Margin"
+                    Value="{StaticResource LeftToRightControlMargin}" />
+                <Setter
+                    Property="BorderThickness"
+                    Value="1.25" />
+                <Setter
+                    Property="CornerRadius"
+                    Value="3" />
+                <Setter
+                    Property="BorderBrush"
+                    Value="{DynamicResource MahApps.Brushes.Button.Border}" />
+                <Setter
+                    Property="Opacity"
+                    Value="1" />
+                <Setter
+                    Property="MinWidth"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" />
+            </Style>
+            <system:Double
+                x:Key="DefaultOpacity">0.6</system:Double>
+            <SolidColorBrush
+                x:Key="WarmUpSegmentBrush"
+                Color="Orange"
+                Opacity="{StaticResource DefaultOpacity}" />
+            <SolidColorBrush
+                x:Key="LongPoseSegmentBrush"
+                Color="ForestGreen"
+                Opacity="{StaticResource DefaultOpacity}" />
+            <SolidColorBrush
+                x:Key="CoolDownSegmentBrush"
+                Color="DodgerBlue"
+                Opacity="{StaticResource DefaultOpacity}" />
+            <SolidColorBrush
+                x:Key="BreakSegmentBrush"
+                Color="DarkGray"
+                Opacity="{StaticResource DefaultOpacity}" />
+            <Thickness
+                x:Key="TextMargin"
+                Left="{StaticResource CommonMarginSize}"
+                Right="{StaticResource CommonMarginSize}" />
+            <Style
+                x:Key="TextStyle"
+                BasedOn="{StaticResource DefaultTextBlockStyle}"
+                TargetType="TextBlock">
+                <Setter
+                    Property="FontWeight"
+                    Value="DemiBold" />
+                <Setter
+                    Property="Margin"
+                    Value="{StaticResource TextMargin}" />
+
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel
+            Name="StackPanel"
+            Orientation="Horizontal" />
+    </Grid>
+</UserControl>

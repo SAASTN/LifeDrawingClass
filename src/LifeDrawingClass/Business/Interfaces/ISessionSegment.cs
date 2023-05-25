@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISession.cs
+//  ISessionSegment.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -19,19 +19,18 @@
 
 namespace LifeDrawingClass.Business.Interfaces
 {
-    using System.Collections.Generic;
     using System.ComponentModel;
     using LifeDrawingClass.Core.Serialization;
 
-    public interface ISession: INotifyPropertyChanged, ISerializableObject
+    public interface ISessionSegment: INotifyPropertyChanged, ISerializableObject
     {
-        IReadOnlyList<string> ImagePaths { get; }
-        IReadOnlyList<ISessionSegment> Segments { get; set; }
-        int CurrentSegmentIndex { get; }
-        int Interval { get; set; }
-        void ImportFolder(string path, bool importSubfolders);
-        void ClearPaths();
-        void AddPaths(string[] fileNames);
-        void StartSession();
+        /// <summary>
+        ///     in cases when a break is in middle of a long-pose segment, the long-pose will break into two segments, but both
+        ///     need to show same slide. So, they are grouped together.
+        /// </summary>
+        int GroupId { get; set; }
+
+        SessionSegmentType Type { get; set; }
+        int DurationMilliseconds { get; set; }
     }
 }

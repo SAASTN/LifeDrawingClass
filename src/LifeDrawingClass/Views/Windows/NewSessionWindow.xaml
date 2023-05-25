@@ -7,6 +7,7 @@
     xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:viewmodels="clr-namespace:LifeDrawingClass.ViewModels"
     xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:controls="clr-namespace:LifeDrawingClass.Views.Controls"
     d:DataContext="{d:DesignInstance Type=viewmodels:NewSessionViewModel}"
     mc:Ignorable="d"
     Title="New Session"
@@ -26,16 +27,47 @@
             <StackPanel>
                 <TextBlock
                     Text="Interval (in milliseconds):"
-                    Margin="{StaticResource ControlMargin}"
+                    Margin="{StaticResource TopToBottomControlMargin}"
                     Style="{DynamicResource DefaultTextBlockStyle}" />
                 <TextBox
                     Text="{Binding SessionModel.Interval}"
-                    Margin="{StaticResource ControlMargin}"
+                    Margin="{StaticResource TopToBottomControlMargin}"
                     Style="{DynamicResource DefaultTextBoxStyle}" />
+                <TextBlock
+                    Text="Session segments:"
+                    Margin="{StaticResource TopToBottomControlMargin}"
+                    Style="{DynamicResource DefaultTextBlockStyle}" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="*" />
+                        <ColumnDefinition
+                            Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <controls:SessionSegmentsListControl
+                        Grid.Column="0"
+                        Height="40"
+                        Segments="{Binding SessionModel.MergedSegments}" />
+                    <Button
+                        Grid.Column="1"
+                        Command="{Binding AddPathsCommand}"
+                        Style="{DynamicResource DefaultButtonStyle}"
+                        Margin="{StaticResource TopToBottomControlMargin}"
+                        ToolTip="Edit session segments ..."
+                        Width="45"
+                        Height="45">
+
+                        <iconPacks:FeatherIcons
+                            Width="30"
+                            Height="28"
+                            Kind="Edit" />
+
+                    </Button>
+                </Grid>
 
                 <TextBlock
                     Text="Image Paths:"
-                    Margin="{StaticResource ControlMargin}"
+                    Margin="{StaticResource TopToBottomControlMargin}"
                     Style="{DynamicResource DefaultTextBlockStyle}" />
             </StackPanel>
             <Grid
@@ -52,7 +84,7 @@
                     Text="{Binding ImagePaths, Mode=OneWay}"
                     TextWrapping="NoWrap"
                     IsReadOnly="True"
-                    Margin="{StaticResource ControlMargin}"
+                    Margin="{StaticResource LeftToRightControlMargin}"
                     Style="{DynamicResource DefaultTextBoxStyle}"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Auto" />
@@ -60,12 +92,12 @@
                 <StackPanel
                     Grid.Column="1"
                     FlowDirection="LeftToRight"
-                    Orientation="Vertical"
-                    ToolTip="Add Images">
+                    Orientation="Vertical">
                     <Button
                         Command="{Binding AddPathsCommand}"
                         Style="{DynamicResource DefaultButtonStyle}"
-                        Margin="{StaticResource ControlMargin}">
+                        Margin="{StaticResource TopToBottomControlMargin}"
+                        ToolTip="Add images ...">
                         <Rectangle
                             Width="32"
                             Height="32"
@@ -81,8 +113,8 @@
                     <Button
                         Command="{Binding AddPathsFromFolderCommand}"
                         Style="{DynamicResource DefaultButtonStyle}"
-                        Margin="{StaticResource ControlMargin}"
-                        ToolTip="Add All Images In Folder">
+                        Margin="{StaticResource TopToBottomControlMargin}"
+                        ToolTip="Add all images in folder ...">
                         <Rectangle
                             Width="32"
                             Height="32"
@@ -98,8 +130,8 @@
                     <Button
                         Command="{Binding ClearPathsCommand}"
                         Style="{DynamicResource DefaultButtonStyle}"
-                        Margin="{StaticResource ControlMargin}"
-                        ToolTip="Remove All Images">
+                        Margin="{StaticResource TopToBottomControlMargin}"
+                        ToolTip="Remove all images">
 
                         <Rectangle
                             Width="32"

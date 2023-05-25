@@ -37,6 +37,7 @@ namespace LifeDrawingClass.Business
         [DataMember] private ImageList _imageList;
 
         private int _currentSegmentIndex;
+        private IReadOnlyList<ISessionSegment> _segments;
 
         #endregion
 
@@ -45,7 +46,32 @@ namespace LifeDrawingClass.Business
         public IReadOnlyList<string> ImagePaths
         {
             get => (this._imageList ??= new ImageList()).AsList();
-            set => this._imageList = new ImageList(value.ToList());
+            set
+            {
+                this._imageList = new ImageList(value.ToList());
+                this.OnPropertyChanged(nameof(this.ImagePaths));
+            }
+        }
+
+        /// <inheritdoc />
+        [DataMember]
+        public IReadOnlyList<ISessionSegment> Segments
+        {
+            get => new List<ISessionSegment>()
+            {
+                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
+                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
+                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
+                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
+                new SessionSegment() { DurationMilliseconds = 6023456, Type = SessionSegmentType.LongPose },
+                new SessionSegment() { DurationMilliseconds = 16654, Type = SessionSegmentType.CoolDown },
+                new SessionSegment() { DurationMilliseconds = 16725, Type = SessionSegmentType.Break }
+            };
+            set
+            {
+                this._segments = value;
+                this.OnPropertyChanged(nameof(this.Segments));
+            }
         }
 
         [DataMember] public int Interval { get; set; }

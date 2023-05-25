@@ -21,6 +21,7 @@ namespace LifeDrawingClass.Models
 {
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using CommunityToolkit.Mvvm.ComponentModel;
     using LifeDrawingClass.Business.Interfaces;
 
@@ -62,6 +63,12 @@ namespace LifeDrawingClass.Models
         public int CurrentSegmentIndex;
 
         public IReadOnlyList<string> ImagePaths => this._session.ImagePaths;
+
+        public IReadOnlyList<SessionSegmentModel> Segments => this._session.Segments
+            .Select(s => new SessionSegmentModel(s.Type, s.DurationMilliseconds, 1)).ToList();
+
+        public IReadOnlyList<SessionSegmentModel> MergedSegments =>
+            SessionSegmentModel.MergeSegment(this._session.Segments);
 
         public int Interval
         {

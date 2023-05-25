@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISession.cs
+//  SessionSegmentType.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,21 +17,17 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Business.Interfaces
+namespace LifeDrawingClass.Business
 {
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using LifeDrawingClass.Core.Serialization;
+    #region Enums
 
-    public interface ISession: INotifyPropertyChanged, ISerializableObject
+    public enum SessionSegmentType
     {
-        IReadOnlyList<string> ImagePaths { get; }
-        IReadOnlyList<ISessionSegment> Segments { get; set; }
-        int CurrentSegmentIndex { get; }
-        int Interval { get; set; }
-        void ImportFolder(string path, bool importSubfolders);
-        void ClearPaths();
-        void AddPaths(string[] fileNames);
-        void StartSession();
+        WarmUp,
+        LongPose,
+        CoolDown,
+        Break
     }
+
+    #endregion
 }

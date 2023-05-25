@@ -21,10 +21,34 @@
             </ResourceDictionary.MergedDictionaries>
             <system:Double
                 x:Key="CommonFontSize">16</system:Double>
+            <system:Double
+                x:Key="CommonMarginSize">5</system:Double>
+
             <Thickness
-                x:Key="ControlMargin">5 5 5 0</Thickness>
+                x:Key="TopToBottomControlMargin"
+                Left="{StaticResource CommonMarginSize}"
+                Top="{StaticResource CommonMarginSize}"
+                Right="{StaticResource CommonMarginSize}"
+                Bottom="0" />
             <Thickness
-                x:Key="BottomControlMargin">5 5 5 5</Thickness>
+                x:Key="BottomControlMargin"
+                Left="{StaticResource CommonMarginSize}"
+                Top="{StaticResource CommonMarginSize}"
+                Right="{StaticResource CommonMarginSize}"
+                Bottom="{StaticResource CommonMarginSize}" />
+
+            <Thickness
+                x:Key="LeftToRightControlMargin"
+                Left="{StaticResource CommonMarginSize}"
+                Top="{StaticResource CommonMarginSize}"
+                Right="0"
+                Bottom="{StaticResource CommonMarginSize}"/>
+            <Thickness
+                x:Key="RightControlMargin"
+                Left="{StaticResource CommonMarginSize}"
+                Top="{StaticResource CommonMarginSize}"
+                Right="{StaticResource CommonMarginSize}"
+                Bottom="0" />
 
 
             <Style
