@@ -25,7 +25,6 @@ namespace LifeDrawingClass.Business
     using System.Runtime.CompilerServices;
     using System.Runtime.Serialization;
     using LifeDrawingClass.Business.Interfaces;
-    using LifeDrawingClass.Core.Configuration;
     using LifeDrawingClass.Core.Image;
     using LifeDrawingClass.Core.Serialization;
 
@@ -37,7 +36,14 @@ namespace LifeDrawingClass.Business
         [DataMember] private ImageList _imageList;
 
         private int _currentSegmentIndex;
-        private IReadOnlyList<ISessionSegment> _segments;
+
+        /// <remarks>
+        ///     The internal field is declared as a list of <see cref="SessionSegment" />s instead of
+        ///     <see cref="ISessionSegment" />s for serialization, as <see cref="DataContractSerializer" /> does not support
+        ///     interfaces. if there was other <see cref="ISessionSegment" /> implementations, the serialization part must be
+        ///     rewritten.
+        /// </remarks>
+        [DataMember] private List<SessionSegment> _segments;
 
         #endregion
 
@@ -54,23 +60,25 @@ namespace LifeDrawingClass.Business
         }
 
         /// <inheritdoc />
-        [DataMember]
+
         public IReadOnlyList<ISessionSegment> Segments
         {
-            get => new List<ISessionSegment>()
+            get => this._segments ??= new List<SessionSegment>()
             {
-                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
-                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
-                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
-                new SessionSegment() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
-                new SessionSegment() { DurationMilliseconds = 6023456, Type = SessionSegmentType.LongPose },
-                new SessionSegment() { DurationMilliseconds = 16654, Type = SessionSegmentType.CoolDown },
-                new SessionSegment() { DurationMilliseconds = 16725, Type = SessionSegmentType.Break }
+                new() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
+                new() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
+                new() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
+                new() { DurationMilliseconds = 6023456, Type = SessionSegmentType.LongPose },
+                new() { DurationMilliseconds = 16654, Type = SessionSegmentType.CoolDown },
+                new() { DurationMilliseconds = 16725, Type = SessionSegmentType.Break }
             };
             set
             {
-                this._segments = value;
-                this.OnPropertyChanged(nameof(this.Segments));
+                if (value != null)
+                {
+                    this._segments = value.Cast<SessionSegment>().ToList();
+                    this.OnPropertyChanged(nameof(this.Segments));
+                }
             }
         }
 
@@ -116,11 +124,7 @@ namespace LifeDrawingClass.Business
             this.OnPropertyChanged(nameof(this.ImagePaths));
         }
 
-        public void StartSession()
-        {
-            this.SerializeToXml(Configurator.GetLastSessionFileName());
-            this.StartSegment(0);
-        }
+        public void StartSession() => this.StartSegment(0);
 
         #endregion
 

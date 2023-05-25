@@ -45,8 +45,9 @@ namespace LifeDrawingClass.Core.Serialization
 
                 CheckAttribute<T>();
                 using FileStream writer = new(fileName, FileMode.Create);
+                using XmlWriter xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings() { Indent = true });
                 DataContractSerializer ser = new(typeof(T));
-                ser.WriteObject(writer, instance);
+                ser.WriteObject(xmlWriter, instance);
             }
             catch (Exception e)
             {
