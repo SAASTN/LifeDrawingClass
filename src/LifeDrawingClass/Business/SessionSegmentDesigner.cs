@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  SessionSegment.cs
+//  SessionSegmentDesigner.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -19,7 +19,6 @@
 
 namespace LifeDrawingClass.Business
 {
-    using System;
     using System.ComponentModel;
     using System.IO;
     using System.Runtime.CompilerServices;
@@ -28,62 +27,24 @@ namespace LifeDrawingClass.Business
     using LifeDrawingClass.Core.Serialization;
 
     [DataContract]
-    public class SessionSegment: ISessionSegment
+    public class SessionSegmentDesigner: ISessionSegmentDesigner
     {
-        #region Constants & Statics
-
-        private const int MinimumSegmentDuration = 10000; // in ms
-
-        #endregion
-
         #region Properties & Fields - Non-Public
 
-        [DataMember] private int _groupId;
-
-        [DataMember] private SessionSegmentType _type;
-
-        [DataMember] private int _durationMilliseconds = MinimumSegmentDuration;
+        [DataMember] private SessionSegmentDesignType _designType = SessionSegmentDesignType.Automatic;
 
         #endregion
 
         #region Properties Impl - Public
 
         /// <inheritdoc />
-        public int GroupId
+        public SessionSegmentDesignType DesignType
         {
-            get => this._groupId;
+            get => this._designType;
             set
             {
-                this._groupId = value;
-                this.OnPropertyChanged(nameof(this.GroupId));
-            }
-        }
-
-        /// <inheritdoc />
-        public SessionSegmentType Type
-        {
-            get => this._type;
-            set
-            {
-                this._type = value;
-                this.OnPropertyChanged(nameof(this.Type));
-            }
-        }
-
-        /// <inheritdoc />
-        public int DurationMilliseconds
-        {
-            get => this._durationMilliseconds;
-            set
-            {
-                if (value < MinimumSegmentDuration)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(value),
-                        $"Segment must be longer than {MinimumSegmentDuration / 1000} seconds.");
-                }
-
-                this._durationMilliseconds = value;
-                this.OnPropertyChanged(nameof(this.DurationMilliseconds));
+                this._designType = value;
+                this.OnPropertyChanged(nameof(this.DesignType));
             }
         }
 
@@ -109,7 +70,7 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         ISerializableObject ISerializableObject.DeserializeFromStream(Stream stream) =>
-            XmlSerializationUtils.DeserializeFromStream<SessionSegment>(stream);
+            XmlSerializationUtils.DeserializeFromStream<SessionSegmentDesigner>(stream);
 
         #endregion
 

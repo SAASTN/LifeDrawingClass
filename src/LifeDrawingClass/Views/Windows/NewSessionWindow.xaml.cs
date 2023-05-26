@@ -17,7 +17,7 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Views
+namespace LifeDrawingClass.Views.Windows
 {
     using System;
     using LifeDrawingClass.Business;
@@ -38,7 +38,7 @@ namespace LifeDrawingClass.Views
         public NewSessionWindow()
         {
             this.InitializeComponent();
-            this.DataContext = new NewSessionViewModel(GetSessionModel());
+            this.DataContext = new NewSessionViewModel(GetLastSessionModel(), GetLastSessionSegmentDesignerModel());
         }
 
         #endregion
@@ -47,7 +47,7 @@ namespace LifeDrawingClass.Views
 
         #region Methods Stat
 
-        private static SessionModel GetSessionModel()
+        private static SessionModel GetLastSessionModel()
         {
             string lastSessionFileName = Configurator.GetLastSessionFileName();
             ISession session;
@@ -62,6 +62,23 @@ namespace LifeDrawingClass.Views
             }
 
             return new SessionModel(session);
+        }
+
+        private static SessionSegmentDesignerModel GetLastSessionSegmentDesignerModel()
+        {
+            string lastDesignerFileName = Configurator.GetLastSessionSegmentDesignerFileName();
+            ISessionSegmentDesigner designer;
+            try
+            {
+                designer = XmlSerializationUtils.DeserializeFromXml<SessionSegmentDesigner>(lastDesignerFileName);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Can not load last session segment designer.", e);
+                designer = new SessionSegmentDesigner();
+            }
+
+            return new SessionSegmentDesignerModel(designer);
         }
 
         #endregion

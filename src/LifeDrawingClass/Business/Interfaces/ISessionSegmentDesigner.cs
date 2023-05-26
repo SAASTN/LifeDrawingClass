@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISerializableObject.cs
+//  ISessionSegmentDesigner.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,14 +17,13 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Core.Serialization
+namespace LifeDrawingClass.Business.Interfaces
 {
-    using System.IO;
+    using System.ComponentModel;
+    using LifeDrawingClass.Core.Serialization;
 
-    public interface ISerializableObject
+    public interface ISessionSegmentDesigner: INotifyPropertyChanged, ISerializableObject
     {
-        void SerializeToXml(string fileName);
-        void SerializeToStream(Stream stream);
-        ISerializableObject DeserializeFromStream(Stream stream);
+        SessionSegmentDesignType DesignType { get; set; }
     }
 }

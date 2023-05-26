@@ -29,8 +29,10 @@ namespace LifeDrawingClass.ViewModels
     using CommunityToolkit.Mvvm.Input;
     using ControlzEx.Theming;
     using LifeDrawingClass.Core.Image;
+    using LifeDrawingClass.Core.Log;
     using LifeDrawingClass.Models;
     using LifeDrawingClass.Views;
+    using LifeDrawingClass.Views.Windows;
     using Microsoft.Win32;
     using Microsoft.WindowsAPICodePack.Dialogs;
 
@@ -50,16 +52,20 @@ namespace LifeDrawingClass.ViewModels
         private readonly Dictionary<string, string> _sessionModelPropertyBindings = new()
         {
             {
-                nameof(Models.SessionModel.CurrentSegmentIndex), nameof(Models.SessionModel.CurrentSegmentIndex)
+                nameof(Models.SessionModel.CurrentSegmentIndex),
+                nameof(Models.SessionModel.CurrentSegmentIndex)
             }, // not bound yet
             { nameof(Models.SessionModel.ImagePaths), nameof(ImagePaths) }
         };
+
+        private SessionSegmentDesignerModel _segmentDesignerModel;
 
         private ICommand _clearPathsCommand;
         private ICommand _addPathsCommand;
         private ICommand _addPathsFromFolderCommand;
         private ICommand _startSessionCommand;
         private ICommand _alterThemCommand;
+        private ICommand _editSessionSegments;
 
         private bool _darkThemSelected = true;
 
@@ -67,8 +73,9 @@ namespace LifeDrawingClass.ViewModels
 
         #region Constructors
 
-        public NewSessionViewModel(SessionModel sessionModel)
+        public NewSessionViewModel(SessionModel sessionModel, SessionSegmentDesignerModel segmentDesignerModel)
         {
+            this._segmentDesignerModel = segmentDesignerModel;
             this.SessionModel = sessionModel;
             sessionModel.PropertyChanged += this.SessionModelOnPropertyChanged;
         }
@@ -92,11 +99,48 @@ namespace LifeDrawingClass.ViewModels
         public Visibility LightThemeButtonVisible => this._darkThemSelected ? Visibility.Visible : Visibility.Collapsed;
         public Visibility DarkThemeButtonVisible => this._darkThemSelected ? Visibility.Collapsed : Visibility.Visible;
 
+        public ICommand EditSessionSegmentsCommand =>
+            this._editSessionSegments ??= new RelayCommand(this.EditSessionSegments);
+
+        #endregion
+
+        #region Methods - Public
+
+        #region Methods Other
+
+        internal void SaveConfigs()
+        {
+            try
+            {
+                this.SessionModel.SaveToConfigs();
+                this._segmentDesignerModel.SaveToConfigs();
+            }
+            catch (Exception e)
+            {
+                Logger.Error("Failed to save configs.", e);
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Methods - Non-Public
 
         #region Methods Other
+
+        private void EditSessionSegments()
+        {
+            SessionSegmentDesignerViewModel viewModel = new(this._segmentDesignerModel);
+            SessionSegmentDesignerWindow window = new()
+            {
+                DataContext = viewModel
+            };
+            viewModel.ClosingRequest += (_, _) => window.Close();
+            window.ShowDialog();
+            this._segmentDesignerModel = viewModel.Result;
+            //TODO: SessionModel.Segments = this._segmentDesignerModel.Segment;
+        }
 
         private void AlterTheme()
         {
@@ -116,6 +160,7 @@ namespace LifeDrawingClass.ViewModels
         {
             if (this.SessionModel.ImagePaths.Count > 0)
             {
+                this.SaveConfigs();
                 SlideShowWindow slideShowWindow = new(this.SessionModel);
                 slideShowWindow.Show();
                 Application.Current?.MainWindow?.Close();

@@ -24,6 +24,7 @@ namespace LifeDrawingClass.Models
     using System.Linq;
     using CommunityToolkit.Mvvm.ComponentModel;
     using LifeDrawingClass.Business.Interfaces;
+    using LifeDrawingClass.Core.Configuration;
 
     public class SessionModel: ObservableObject
 
@@ -91,6 +92,8 @@ namespace LifeDrawingClass.Models
             this._session.AddPaths(fileNames);
 
         public void StartSession() => this._session.StartSession();
+
+        internal void SaveToConfigs() => this._session.SerializeToXml(Configurator.GetLastSessionFileName());
 
         #endregion
 

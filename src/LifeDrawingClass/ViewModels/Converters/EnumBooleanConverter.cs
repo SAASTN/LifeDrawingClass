@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISerializableObject.cs
+//  SessionSegmentDesignTypeBooleanConverter.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,14 +17,26 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Core.Serialization
+namespace LifeDrawingClass.ViewModels.Converters
 {
-    using System.IO;
+    using System;
+    using System.Globalization;
+    using System.Windows.Data;
 
-    public interface ISerializableObject
+    internal class EnumBooleanConverter: IValueConverter
     {
-        void SerializeToXml(string fileName);
-        void SerializeToStream(Stream stream);
-        ISerializableObject DeserializeFromStream(Stream stream);
+        #region Methods - Public
+
+        #region Methods Impl
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture) =>
+            value?.Equals(parameter) ?? parameter is null;
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
+            (bool) (value ?? false) ? parameter : Binding.DoNothing;
+
+        #endregion
+
+        #endregion
     }
 }

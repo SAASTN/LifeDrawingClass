@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISerializableObject.cs
+//  SessionSegmentDesignerWindow.xaml.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,14 +17,20 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Core.Serialization
+namespace LifeDrawingClass.Views.Windows
 {
-    using System.IO;
-
-    public interface ISerializableObject
+    /// <summary>
+    ///     Interaction logic for SessionSegmentDesignerWindow.xaml
+    /// </summary>
+    public partial class SessionSegmentDesignerWindow
     {
-        void SerializeToXml(string fileName);
-        void SerializeToStream(Stream stream);
-        ISerializableObject DeserializeFromStream(Stream stream);
+        #region Constructors
+
+        public SessionSegmentDesignerWindow()
+        {
+            this.InitializeComponent();
+        }
+
+        #endregion
     }
 }

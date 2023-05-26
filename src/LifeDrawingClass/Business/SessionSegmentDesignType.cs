@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISerializableObject.cs
+//  SessionSegmentDesignType.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,14 +17,15 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Core.Serialization
+namespace LifeDrawingClass.Business
 {
-    using System.IO;
+    #region Enums
 
-    public interface ISerializableObject
+    public enum SessionSegmentDesignType
     {
-        void SerializeToXml(string fileName);
-        void SerializeToStream(Stream stream);
-        ISerializableObject DeserializeFromStream(Stream stream);
+        Automatic,
+        Manual
     }
+
+    #endregion
 }

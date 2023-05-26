@@ -21,6 +21,7 @@ namespace LifeDrawingClass.Business
 {
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
     using System.Runtime.Serialization;
@@ -105,6 +106,9 @@ namespace LifeDrawingClass.Business
         /// <inheritdoc />
         public void SerializeToXml(string fileName) => XmlSerializationUtils.SerializeToXml(this, fileName);
 
+        /// <inheritdoc />
+        public void SerializeToStream(Stream stream) => XmlSerializationUtils.SerializeToStream(this, stream);
+
         public void ImportFolder(string path, bool importSubfolders)
         {
             this._imageList.ImportFolder(path, importSubfolders);
@@ -131,6 +135,14 @@ namespace LifeDrawingClass.Business
         #endregion
 
         #region Methods - Non-Public
+
+        #region Methods Impl
+
+        /// <inheritdoc />
+        ISerializableObject ISerializableObject.DeserializeFromStream(Stream stream) =>
+            XmlSerializationUtils.DeserializeFromStream<Session>(stream);
+
+        #endregion
 
         #region Methods Other
 
