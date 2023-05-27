@@ -42,7 +42,7 @@
                 Left="{StaticResource CommonMarginSize}"
                 Top="{StaticResource CommonMarginSize}"
                 Right="0"
-                Bottom="{StaticResource CommonMarginSize}"/>
+                Bottom="{StaticResource CommonMarginSize}" />
             <Thickness
                 x:Key="RightControlMargin"
                 Left="{StaticResource CommonMarginSize}"
@@ -55,6 +55,20 @@
                 x:Key="DefaultButtonStyle"
                 BasedOn="{StaticResource MahApps.Styles.Button}"
                 TargetType="{x:Type Button}">
+                <Setter
+                    Property="FontSize"
+                    Value="{StaticResource CommonFontSize}" />
+                <Setter
+                    Property="FontWeight"
+                    Value="Normal" />
+                <Setter
+                    Property="mah:ControlsHelper.ContentCharacterCasing"
+                    Value="Normal" />
+            </Style>
+            <Style
+                x:Key="DefaultRadioButtonStyle"
+                BasedOn="{StaticResource MahApps.Styles.RadioButton}"
+                TargetType="{x:Type RadioButton}">
                 <Setter
                     Property="FontSize"
                     Value="{StaticResource CommonFontSize}" />

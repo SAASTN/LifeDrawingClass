@@ -23,13 +23,24 @@ namespace LifeDrawingClass.ViewModels
     using System.Windows.Input;
     using CommunityToolkit.Mvvm.ComponentModel;
     using CommunityToolkit.Mvvm.Input;
+    using LifeDrawingClass.Business;
     using LifeDrawingClass.Models;
 
     public class SessionSegmentDesignerViewModel: ObservableObject
     {
         #region Properties & Fields - Non-Public
 
+        /// <summary>
+        ///     Used in case user cancels changes.
+        /// </summary>
         private readonly SessionSegmentDesignerModel _designerModelOriginal;
+
+        /// <summary>
+        ///     It is a deep copy of the <see cref="_designerModelOriginal" />. It is used in case user accepts changes. View-model
+        ///     uses this instance and the window is bound to it.
+        /// </summary>
+        private readonly SessionSegmentDesignerModel _designerModelCopy;
+
         private ICommand _ok;
         private ICommand _cancel;
 
@@ -40,18 +51,36 @@ namespace LifeDrawingClass.ViewModels
         public SessionSegmentDesignerViewModel(SessionSegmentDesignerModel designerModel)
         {
             this._designerModelOriginal = designerModel;
-            this.DesignerModel = designerModel.DeepCopy();
+            this._designerModelCopy = new SessionSegmentDesignerModel(designerModel.GetDesigner());
         }
 
         #endregion
 
         #region Properties & Fields - Public
 
-        public SessionSegmentDesignerModel DesignerModel { get; }
-
         public ICommand OkCommand => this._ok ??= new RelayCommand(this.Ok);
         public ICommand CancelCommand => this._cancel ??= new RelayCommand(this.Cancel);
         public SessionSegmentDesignerModel Result { get; private set; }
+
+        public SessionSegmentDesignType DesignType
+        {
+            get => this._designerModelCopy.DesignType;
+            set
+            {
+                this._designerModelCopy.DesignType = value;
+                this.OnPropertyChanged(nameof(this.DesignType));
+            }
+        }
+
+        public int SessionDuration
+        {
+            get => this._designerModelCopy.SessionDuration;
+            set
+            {
+                this._designerModelCopy.SessionDuration = value;
+                this.OnPropertyChanged(nameof(this.SessionDuration));
+            }
+        }
 
         #endregion
 
@@ -59,17 +88,11 @@ namespace LifeDrawingClass.ViewModels
 
         #region Methods Other
 
-        protected void OnClosingRequest()
-        {
-            if (this.ClosingRequest != null)
-            {
-                this.ClosingRequest(this, EventArgs.Empty);
-            }
-        }
+        protected void OnClosingRequest() => this.ClosingRequest?.Invoke(this, EventArgs.Empty);
 
         private void Ok()
         {
-            this.Result = this.DesignerModel;
+            this.Result = this._designerModelCopy;
             this.OnClosingRequest();
         }
 

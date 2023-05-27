@@ -19,11 +19,61 @@
 
 namespace LifeDrawingClass.Business.Interfaces
 {
-    using System.ComponentModel;
+    using System.Collections.Generic;
     using LifeDrawingClass.Core.Serialization;
 
-    public interface ISessionSegmentDesigner: INotifyPropertyChanged, ISerializableObject
+    public interface ISessionSegmentDesigner: ISerializableObject
     {
         SessionSegmentDesignType DesignType { get; set; }
+
+        /// <summary>
+        ///     Total class length in minutes.
+        /// </summary>
+        bool SessionDuration { get; set; }
+
+        /// <summary>
+        ///     Specifies whether the session starts with a warm-up.
+        /// </summary>
+        bool AddWarmUp { get; set; }
+
+        /// <summary>
+        ///     For example when it contains [1, 5, 15], it means that designer can create only 1m, 5m, and 15m warm-up segments.
+        /// </summary>
+        List<int> AvailableWarmUpDurations { get; set; }
+
+        /// <summary>
+        ///     Determines the <b>approximate</b> ratio of the warm-up duration to the total session time.
+        /// </summary>
+        double WarmUpPercent { get; set; }
+
+        /// <summary>
+        ///     Specifies whether the session ends with a cool-down.
+        /// </summary>
+        bool AddCoolDown { get; set; }
+
+        /// <summary>
+        ///     For example when it contains [1, 5, 15], it means that designer can create only 1m, 5m, and 15m cool-down segments.
+        /// </summary>
+        List<int> AvailableCoolDownDurations { get; set; }
+
+        /// <summary>
+        ///     Determines the <b>approximate</b> ratio of the warm-up duration to the total session time.
+        /// </summary>
+        double CoolDownPercent { get; set; }
+
+        int NumberOfLongPoses { get; set; }
+
+        bool AddBreaks { get; set; }
+
+        /// <summary>
+        ///     Determines the <b>approximate</b> ratio of the breaks duration to the total session time.
+        /// </summary>
+        double BreakPercent { get; set; }
+
+        double NumberOfBreak { get; set; }
+
+        string ManualSegmentsDefinition { get; set; }
+
+        List<ISessionSegment> GetSegments();
     }
 }

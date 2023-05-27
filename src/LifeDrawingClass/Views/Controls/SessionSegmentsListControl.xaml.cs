@@ -122,24 +122,14 @@ namespace LifeDrawingClass.Views.Controls
 
         private Brush GetSegmentBrush(SessionSegmentType type)
         {
-            string brushName;
-            switch (type)
+            string brushName = type switch
             {
-                case SessionSegmentType.WarmUp:
-                    brushName = "WarmUpSegmentBrush";
-                    break;
-                case SessionSegmentType.LongPose:
-                    brushName = "LongPoseSegmentBrush";
-                    break;
-                case SessionSegmentType.CoolDown:
-                    brushName = "CoolDownSegmentBrush";
-                    break;
-                case SessionSegmentType.Break:
-                    brushName = "BreakSegmentBrush";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
+                SessionSegmentType.WarmUp => "WarmUpSegmentBrush",
+                SessionSegmentType.LongPose => "LongPoseSegmentBrush",
+                SessionSegmentType.CoolDown => "CoolDownSegmentBrush",
+                SessionSegmentType.Break => "BreakSegmentBrush",
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
 
             return (Brush) this.FindResource(brushName);
         }

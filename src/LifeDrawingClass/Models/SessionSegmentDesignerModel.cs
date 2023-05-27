@@ -19,34 +19,18 @@
 
 namespace LifeDrawingClass.Models
 {
-    using System.Collections.Generic;
-    using System.ComponentModel;
+    using System;
     using CommunityToolkit.Mvvm.ComponentModel;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Configuration;
-    using LifeDrawingClass.Core.Serialization;
 
     public class SessionSegmentDesignerModel: ObservableObject
     {
         #region Properties & Fields - Non-Public
 
-        /// <summary>
-        ///     Key is the name of property of th <see cref="ISessionSegmentDesigner" /> instance, and value is the name of
-        ///     property of the
-        ///     <see cref="SessionSegmentDesignerModel" /> instance.
-        ///     When <see cref="SessionModel" /> gets notified that one of properties of its <see cref="ISessionSegmentDesigner" />
-        ///     has change, it
-        ///     notifies its ViewModels by calling
-        ///     <see cref="ObservableObject.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)" /> with the name of
-        ///     its own property.
-        /// </summary>
-        private readonly Dictionary<string, string> _designerPropertyBindings = new()
-        {
-            { nameof(ISessionSegmentDesigner.DesignType), nameof(DesignType) }
-        };
-
-        private readonly ISessionSegmentDesigner _designer;
+        private SessionSegmentDesignType _designType;
+        private int _sessionDuration;
 
         #endregion
 
@@ -54,8 +38,7 @@ namespace LifeDrawingClass.Models
 
         public SessionSegmentDesignerModel(ISessionSegmentDesigner designer)
         {
-            this._designer = designer;
-            this._designer.PropertyChanged += this.DesignerPropertyChanged;
+            this.Initialize(designer);
         }
 
         #endregion
@@ -64,8 +47,18 @@ namespace LifeDrawingClass.Models
 
         public SessionSegmentDesignType DesignType
         {
-            get => this._designer.DesignType;
-            set => this._designer.DesignType = value;
+            get => this._designType;
+            set => this.SetProperty(ref this._designType, value, nameof(this.DesignType));
+        }
+
+        public int SessionDuration
+        {
+            get => this._sessionDuration;
+            set
+            {
+                value = (int) (Math.Round(value / 5.0) * 5.0);
+                this.SetProperty(ref this._sessionDuration, value, nameof(this.SessionDuration));
+            }
         }
 
         #endregion
@@ -75,10 +68,12 @@ namespace LifeDrawingClass.Models
         #region Methods Other
 
         internal void SaveToConfigs() =>
-            this._designer.SerializeToXml(Configurator.GetLastSessionSegmentDesignerFileName());
+            this.GetDesigner().SerializeToXml(Configurator.GetLastSessionSegmentDesignerFileName());
 
-        internal SessionSegmentDesignerModel DeepCopy() =>
-            new(XmlSerializationUtils.DeepCopy(this._designer));
+        public ISessionSegmentDesigner GetDesigner() => new SessionSegmentDesigner()
+        {
+            DesignType = this.DesignType
+        };
 
         #endregion
 
@@ -88,8 +83,11 @@ namespace LifeDrawingClass.Models
 
         #region Methods Other
 
-        private void DesignerPropertyChanged(object sender, PropertyChangedEventArgs e) =>
-            this.OnPropertyChanged(e.PropertyName != null ? this._designerPropertyBindings[e.PropertyName] : null);
+        private void Initialize(ISessionSegmentDesigner designer)
+        {
+            this._designType = designer.DesignType;
+            this.OnPropertyChanged();
+        }
 
         #endregion
 

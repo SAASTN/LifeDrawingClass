@@ -19,9 +19,8 @@
 
 namespace LifeDrawingClass.Business
 {
-    using System.ComponentModel;
+    using System.Collections.Generic;
     using System.IO;
-    using System.Runtime.CompilerServices;
     using System.Runtime.Serialization;
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Serialization;
@@ -29,24 +28,58 @@ namespace LifeDrawingClass.Business
     [DataContract]
     public class SessionSegmentDesigner: ISessionSegmentDesigner
     {
-        #region Properties & Fields - Non-Public
-
-        [DataMember] private SessionSegmentDesignType _designType = SessionSegmentDesignType.Automatic;
-
-        #endregion
-
         #region Properties Impl - Public
 
         /// <inheritdoc />
-        public SessionSegmentDesignType DesignType
-        {
-            get => this._designType;
-            set
-            {
-                this._designType = value;
-                this.OnPropertyChanged(nameof(this.DesignType));
-            }
-        }
+        [DataMember]
+        public SessionSegmentDesignType DesignType { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public bool SessionDuration { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public bool AddWarmUp { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public List<int> AvailableWarmUpDurations { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public double WarmUpPercent { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public bool AddCoolDown { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public List<int> AvailableCoolDownDurations { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public double CoolDownPercent { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public int NumberOfLongPoses { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public bool AddBreaks { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public double BreakPercent { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public double NumberOfBreak { get; set; }
+
+        /// <inheritdoc />
+        public string ManualSegmentsDefinition { get; set; }
 
         #endregion
 
@@ -59,6 +92,9 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         public void SerializeToStream(Stream stream) => XmlSerializationUtils.SerializeToStream(this, stream);
+
+        /// <inheritdoc />
+        public List<ISessionSegment> GetSegments() => throw new System.NotImplementedException();
 
         #endregion
 
@@ -73,20 +109,6 @@ namespace LifeDrawingClass.Business
             XmlSerializationUtils.DeserializeFromStream<SessionSegmentDesigner>(stream);
 
         #endregion
-
-        #region Methods Other
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        #endregion
-
-        #endregion
-
-        #region Events
-
-        /// <inheritdoc />
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
     }
