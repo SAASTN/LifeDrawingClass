@@ -8,10 +8,10 @@
     xmlns:converters="clr-namespace:LifeDrawingClass.ViewModels.Converters"
     xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:controls="clr-namespace:LifeDrawingClass.Views.Controls"
-    x:Class="LifeDrawingClass.Views.Windows.SessionSegmentDesignerWindow"
-    d:DataContext="{d:DesignInstance Type={x:Type viewModels:SessionSegmentDesignerViewModel}}"
+    x:Class="LifeDrawingClass.Views.Windows.SessionPropertiesWindow"
+    d:DataContext="{d:DesignInstance Type={x:Type viewModels:SessionPropertiesViewModel}}"
     mc:Ignorable="d"
-    Title="SessionSegmentDesignerWindow"
+    Title="SessionPropertiesWindow"
     Height="409"
     Width="800">
     <mah:MetroWindow.Resources>

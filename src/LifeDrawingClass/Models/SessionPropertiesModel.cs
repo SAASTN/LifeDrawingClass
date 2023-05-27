@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  SessionSegmentDesignerModel.cs
+//  SessionPropertiesModel.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -25,7 +25,7 @@ namespace LifeDrawingClass.Models
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Configuration;
 
-    public class SessionSegmentDesignerModel: ObservableObject
+    public class SessionPropertiesModel: ObservableObject
     {
         #region Properties & Fields - Non-Public
 
@@ -36,9 +36,9 @@ namespace LifeDrawingClass.Models
 
         #region Constructors
 
-        public SessionSegmentDesignerModel(ISessionSegmentDesigner designer)
+        public SessionPropertiesModel(ISessionProperties properties)
         {
-            this.Initialize(designer);
+            this.Initialize(properties);
         }
 
         #endregion
@@ -68,9 +68,9 @@ namespace LifeDrawingClass.Models
         #region Methods Other
 
         internal void SaveToConfigs() =>
-            this.GetDesigner().SerializeToXml(Configurator.GetLastSessionSegmentDesignerFileName());
+            this.GetProperties().SerializeToXml(Configurator.GetLastSessionPropertiesFileName());
 
-        public ISessionSegmentDesigner GetDesigner() => new SessionSegmentDesigner()
+        public ISessionProperties GetProperties() => new SessionProperties()
         {
             DesignType = this.DesignType
         };
@@ -83,9 +83,9 @@ namespace LifeDrawingClass.Models
 
         #region Methods Other
 
-        private void Initialize(ISessionSegmentDesigner designer)
+        private void Initialize(ISessionProperties properties)
         {
-            this._designType = designer.DesignType;
+            this._designType = properties.DesignType;
             this.OnPropertyChanged();
         }
 

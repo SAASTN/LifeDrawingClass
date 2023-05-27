@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  SessionSegmentDesignerWindow.xaml.cs
+//  SessionPropertiesWindow.xaml.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -20,13 +20,13 @@
 namespace LifeDrawingClass.Views.Windows
 {
     /// <summary>
-    ///     Interaction logic for SessionSegmentDesignerWindow.xaml
+    ///     Interaction logic for SessionPropertiesWindow.xaml
     /// </summary>
-    public partial class SessionSegmentDesignerWindow
+    public partial class SessionPropertiesWindow
     {
         #region Constructors
 
-        public SessionSegmentDesignerWindow()
+        public SessionPropertiesWindow()
         {
             this.InitializeComponent();
         }

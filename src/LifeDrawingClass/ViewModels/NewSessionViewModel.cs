@@ -58,7 +58,7 @@ namespace LifeDrawingClass.ViewModels
             { nameof(Models.SessionModel.ImagePaths), nameof(ImagePaths) }
         };
 
-        private SessionSegmentDesignerModel _segmentDesignerModel;
+        private SessionPropertiesModel _sessionPropertiesModel;
 
         private ICommand _clearPathsCommand;
         private ICommand _addPathsCommand;
@@ -73,9 +73,9 @@ namespace LifeDrawingClass.ViewModels
 
         #region Constructors
 
-        public NewSessionViewModel(SessionModel sessionModel, SessionSegmentDesignerModel segmentDesignerModel)
+        public NewSessionViewModel(SessionModel sessionModel, SessionPropertiesModel sessionPropertiesModel)
         {
-            this._segmentDesignerModel = segmentDesignerModel;
+            this._sessionPropertiesModel = sessionPropertiesModel;
             this.SessionModel = sessionModel;
             sessionModel.PropertyChanged += this.SessionModelOnPropertyChanged;
         }
@@ -113,7 +113,7 @@ namespace LifeDrawingClass.ViewModels
             try
             {
                 this.SessionModel.SaveToConfigs();
-                this._segmentDesignerModel.SaveToConfigs();
+                this._sessionPropertiesModel.SaveToConfigs();
             }
             catch (Exception e)
             {
@@ -131,15 +131,15 @@ namespace LifeDrawingClass.ViewModels
 
         private void EditSessionSegments()
         {
-            SessionSegmentDesignerViewModel viewModel = new(this._segmentDesignerModel);
-            SessionSegmentDesignerWindow window = new()
+            SessionPropertiesViewModel viewModel = new(this._sessionPropertiesModel);
+            SessionPropertiesWindow window = new()
             {
                 DataContext = viewModel
             };
             viewModel.ClosingRequest += (_, _) => window.Close();
             window.ShowDialog();
-            this._segmentDesignerModel = viewModel.Result;
-            //TODO: SessionModel.Segments = this._segmentDesignerModel.Segment;
+            this._sessionPropertiesModel = viewModel.Result;
+            //TODO: SessionModel.Segments = this._sessionPropertiesModel.Segment;
         }
 
         private void AlterTheme()

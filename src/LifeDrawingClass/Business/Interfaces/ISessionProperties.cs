@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISessionSegmentDesigner.cs
+//  ISessionProperties.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -22,7 +22,7 @@ namespace LifeDrawingClass.Business.Interfaces
     using System.Collections.Generic;
     using LifeDrawingClass.Core.Serialization;
 
-    public interface ISessionSegmentDesigner: ISerializableObject
+    public interface ISessionProperties: ISerializableObject
     {
         SessionSegmentDesignType DesignType { get; set; }
 

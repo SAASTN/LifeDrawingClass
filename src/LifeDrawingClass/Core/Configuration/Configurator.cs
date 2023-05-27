@@ -29,7 +29,7 @@ namespace LifeDrawingClass.Core.Configuration
         public const string ApplicationName = "LifeDrawingClass";
         public const string ApplicationTitle = "Life-Drawing Class";
         private const string LastSessionFileName = "LastSession.xml";
-        private const string LastSessionSegmentDesignerFileName = "LastDesigner.xml";
+        private const string LastSessionPropertiesFileName = "LastProperties.xml";
 
         #endregion
 
@@ -48,8 +48,8 @@ namespace LifeDrawingClass.Core.Configuration
 
         public static string GetLastSessionFileName() => Path.Combine(GetAppDataFolderPath(), LastSessionFileName);
 
-        public static string GetLastSessionSegmentDesignerFileName() =>
-            Path.Combine(GetAppDataFolderPath(), LastSessionSegmentDesignerFileName);
+        public static string GetLastSessionPropertiesFileName() =>
+            Path.Combine(GetAppDataFolderPath(), LastSessionPropertiesFileName);
 
         #endregion
 

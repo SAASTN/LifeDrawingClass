@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  SessionSegmentDesignerViewModel.cs
+//  SessionPropertiesViewModel.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -26,20 +26,20 @@ namespace LifeDrawingClass.ViewModels
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Models;
 
-    public class SessionSegmentDesignerViewModel: ObservableObject
+    public class SessionPropertiesViewModel: ObservableObject
     {
         #region Properties & Fields - Non-Public
 
         /// <summary>
         ///     Used in case user cancels changes.
         /// </summary>
-        private readonly SessionSegmentDesignerModel _designerModelOriginal;
+        private readonly SessionPropertiesModel _propertiesModelOriginal;
 
         /// <summary>
-        ///     It is a deep copy of the <see cref="_designerModelOriginal" />. It is used in case user accepts changes. View-model
+        ///     It is a deep copy of the <see cref="_propertiesModelOriginal" />. It is used in case user accepts changes. View-model
         ///     uses this instance and the window is bound to it.
         /// </summary>
-        private readonly SessionSegmentDesignerModel _designerModelCopy;
+        private readonly SessionPropertiesModel _propertiesModelCopy;
 
         private ICommand _ok;
         private ICommand _cancel;
@@ -48,10 +48,10 @@ namespace LifeDrawingClass.ViewModels
 
         #region Constructors
 
-        public SessionSegmentDesignerViewModel(SessionSegmentDesignerModel designerModel)
+        public SessionPropertiesViewModel(SessionPropertiesModel propertiesModel)
         {
-            this._designerModelOriginal = designerModel;
-            this._designerModelCopy = new SessionSegmentDesignerModel(designerModel.GetDesigner());
+            this._propertiesModelOriginal = propertiesModel;
+            this._propertiesModelCopy = new SessionPropertiesModel(propertiesModel.GetProperties());
         }
 
         #endregion
@@ -60,24 +60,24 @@ namespace LifeDrawingClass.ViewModels
 
         public ICommand OkCommand => this._ok ??= new RelayCommand(this.Ok);
         public ICommand CancelCommand => this._cancel ??= new RelayCommand(this.Cancel);
-        public SessionSegmentDesignerModel Result { get; private set; }
+        public SessionPropertiesModel Result { get; private set; }
 
         public SessionSegmentDesignType DesignType
         {
-            get => this._designerModelCopy.DesignType;
+            get => this._propertiesModelCopy.DesignType;
             set
             {
-                this._designerModelCopy.DesignType = value;
+                this._propertiesModelCopy.DesignType = value;
                 this.OnPropertyChanged(nameof(this.DesignType));
             }
         }
 
         public int SessionDuration
         {
-            get => this._designerModelCopy.SessionDuration;
+            get => this._propertiesModelCopy.SessionDuration;
             set
             {
-                this._designerModelCopy.SessionDuration = value;
+                this._propertiesModelCopy.SessionDuration = value;
                 this.OnPropertyChanged(nameof(this.SessionDuration));
             }
         }
@@ -92,13 +92,13 @@ namespace LifeDrawingClass.ViewModels
 
         private void Ok()
         {
-            this.Result = this._designerModelCopy;
+            this.Result = this._propertiesModelCopy;
             this.OnClosingRequest();
         }
 
         private void Cancel()
         {
-            this.Result = this._designerModelOriginal;
+            this.Result = this._propertiesModelOriginal;
             this.OnClosingRequest();
         }
 

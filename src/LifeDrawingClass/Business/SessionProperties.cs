@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  SessionSegmentDesigner.cs
+//  SessionProperties.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -26,7 +26,7 @@ namespace LifeDrawingClass.Business
     using LifeDrawingClass.Core.Serialization;
 
     [DataContract]
-    public class SessionSegmentDesigner: ISessionSegmentDesigner
+    public class SessionProperties: ISessionProperties
     {
         #region Properties Impl - Public
 
@@ -106,7 +106,7 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         ISerializableObject ISerializableObject.DeserializeFromStream(Stream stream) =>
-            XmlSerializationUtils.DeserializeFromStream<SessionSegmentDesigner>(stream);
+            XmlSerializationUtils.DeserializeFromStream<SessionProperties>(stream);
 
         #endregion
 

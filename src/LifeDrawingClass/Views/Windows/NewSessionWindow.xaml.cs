@@ -38,7 +38,7 @@ namespace LifeDrawingClass.Views.Windows
         public NewSessionWindow()
         {
             this.InitializeComponent();
-            this.DataContext = new NewSessionViewModel(GetLastSessionModel(), GetLastSessionSegmentDesignerModel());
+            this.DataContext = new NewSessionViewModel(GetLastSessionModel(), GetLastSessionPropertiesModel());
         }
 
         #endregion
@@ -64,21 +64,21 @@ namespace LifeDrawingClass.Views.Windows
             return new SessionModel(session);
         }
 
-        private static SessionSegmentDesignerModel GetLastSessionSegmentDesignerModel()
+        private static SessionPropertiesModel GetLastSessionPropertiesModel()
         {
-            string lastDesignerFileName = Configurator.GetLastSessionSegmentDesignerFileName();
-            ISessionSegmentDesigner designer;
+            string lastPropertiesFileName = Configurator.GetLastSessionPropertiesFileName();
+            ISessionProperties properties;
             try
             {
-                designer = XmlSerializationUtils.DeserializeFromXml<SessionSegmentDesigner>(lastDesignerFileName);
+                properties = XmlSerializationUtils.DeserializeFromXml<SessionProperties>(lastPropertiesFileName);
             }
             catch (Exception e)
             {
-                Logger.Error("Can not load last session segment designer.", e);
-                designer = new SessionSegmentDesigner();
+                Logger.Error("Can not load last session segment properties.", e);
+                properties = new SessionProperties();
             }
 
-            return new SessionSegmentDesignerModel(designer);
+            return new SessionPropertiesModel(properties);
         }
 
         #endregion
