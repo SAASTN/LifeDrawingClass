@@ -54,7 +54,7 @@ namespace LifeDrawingClass.ViewModels
 
         #region Constructors
 
-        public NewSessionViewModel(SessionModel sessionModel, SessionPropertiesModel sessionPropertiesModel)
+        public NewSessionViewModel(NewSessionModel sessionModel, SessionPropertiesModel sessionPropertiesModel)
         {
             this._sessionPropertiesModel = sessionPropertiesModel;
             this.SessionModel = sessionModel;
@@ -64,7 +64,7 @@ namespace LifeDrawingClass.ViewModels
 
         #region Properties & Fields - Public
 
-        public SessionModel SessionModel { get; }
+        public NewSessionModel SessionModel { get; }
 
         public ICommand StartSessionCommand => this._startSessionCommand ??= new RelayCommand(this.StartSession);
         public ICommand ClearPathsCommand => this._clearPathsCommand ??= new RelayCommand(this.ClearPaths);
@@ -142,7 +142,7 @@ namespace LifeDrawingClass.ViewModels
             if (this.SessionModel.ImagePaths.Count > 0)
             {
                 this.SaveConfigs();
-                SlideShowWindow slideShowWindow = new(this.SessionModel);
+                SlideShowWindow slideShowWindow = new(new SlideShowSessionModel(this.SessionModel.GetSession()));
                 slideShowWindow.Show();
                 Application.Current?.MainWindow?.Close();
             }

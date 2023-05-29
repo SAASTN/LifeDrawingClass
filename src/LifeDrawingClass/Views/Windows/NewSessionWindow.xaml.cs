@@ -47,7 +47,7 @@ namespace LifeDrawingClass.Views.Windows
 
         #region Methods Stat
 
-        private static SessionModel GetLastSessionModel()
+        private static NewSessionModel GetLastSessionModel()
         {
             string lastSessionFileName = Configurator.GetLastSessionFileName();
             ISession session;
@@ -61,7 +61,7 @@ namespace LifeDrawingClass.Views.Windows
                 session = new Session();
             }
 
-            return new SessionModel(session);
+            return new NewSessionModel(session);
         }
 
         private static SessionPropertiesModel GetLastSessionPropertiesModel()

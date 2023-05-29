@@ -28,7 +28,7 @@ namespace LifeDrawingClass.ViewModels
     {
         #region Properties & Fields - Non-Public
 
-        private readonly SessionModel _sessionModel;
+        private readonly SlideShowSessionModel _sessionModel;
 
         private int _currentIndex;
 
@@ -36,7 +36,7 @@ namespace LifeDrawingClass.ViewModels
 
         #region Constructors
 
-        public SlideShowViewModel(SessionModel sessionModel)
+        public SlideShowViewModel(SlideShowSessionModel sessionModel)
         {
             this._sessionModel = sessionModel;
             DispatcherTimer timer = new()

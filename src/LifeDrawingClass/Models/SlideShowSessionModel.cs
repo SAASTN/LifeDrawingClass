@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  SlideShowWindow.xaml.cs
+//  SlideShowSessionModel.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,23 +17,43 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Views.Windows
+namespace LifeDrawingClass.Models
 {
-    using LifeDrawingClass.Models;
-    using LifeDrawingClass.ViewModels;
+    using System.Collections.Generic;
+    using CommunityToolkit.Mvvm.ComponentModel;
+    using LifeDrawingClass.Business.Interfaces;
 
-    /// <summary>
-    ///     Interaction logic for SlideShowWindow.xaml
-    /// </summary>
-    public partial class SlideShowWindow
+    public class SlideShowSessionModel: ObservableObject
     {
         #region Constructors
 
-        public SlideShowWindow(SlideShowSessionModel sessionModel)
+        public SlideShowSessionModel(ISession session)
         {
-            this.InitializeComponent();
-            this.DataContext = new SlideShowViewModel(sessionModel);
+            this.Initialize(session);
         }
+
+        #endregion
+
+        #region Properties & Fields - Public
+
+        public int Interval { get; private set; }
+
+        public IReadOnlyList<string> ImagePaths { get; private set; }
+
+        #endregion
+
+        #region Methods - Non-Public
+
+        #region Methods Other
+
+        private void Initialize(ISession session)
+        {
+            this.Interval = session.Interval;
+            this.ImagePaths = session.ImagePaths;
+            this.OnPropertyChanged();
+        }
+
+        #endregion
 
         #endregion
     }

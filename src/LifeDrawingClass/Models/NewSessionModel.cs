@@ -26,7 +26,7 @@ namespace LifeDrawingClass.Models
     using LifeDrawingClass.Core.Configuration;
     using LifeDrawingClass.Core.Image;
 
-    public class SessionModel: ObservableObject
+    public class NewSessionModel: ObservableObject
 
     {
         #region Properties & Fields - Non-Public
@@ -39,7 +39,7 @@ namespace LifeDrawingClass.Models
 
         #region Constructors
 
-        public SessionModel(ISession session)
+        public NewSessionModel(ISession session)
         {
             this.Initialize(session);
         }
@@ -98,7 +98,7 @@ namespace LifeDrawingClass.Models
             this.OnPropertyChanged();
         }
 
-        private ISession GetSession() => new Session()
+        internal ISession GetSession() => new Session()
         {
             ImagePaths = this.ImagePaths,
             Segments = SessionSegmentModel.ExpandSegments(this.MergedSegments),
