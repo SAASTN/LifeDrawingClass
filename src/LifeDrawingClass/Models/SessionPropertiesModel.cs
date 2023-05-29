@@ -124,7 +124,7 @@ namespace LifeDrawingClass.Models
             AddWarmUp = this.AddWarmUp,
             AddCoolDown = this.AddCoolDown,
             AddBreaks = this.AddBreaks,
-            IsSimplified = this.IsSimplified
+            IsSimplified = true
         };
 
         #endregion

@@ -20,18 +20,13 @@
 namespace LifeDrawingClass.Business.Interfaces
 {
     using System.Collections.Generic;
-    using System.ComponentModel;
     using LifeDrawingClass.Core.Serialization;
 
-    public interface ISession: INotifyPropertyChanged, ISerializableObject
+    public interface ISession: ISerializableObject
     {
         IReadOnlyList<string> ImagePaths { get; }
         IReadOnlyList<ISessionSegment> Segments { get; set; }
         int CurrentSegmentIndex { get; }
         int Interval { get; set; }
-        void ImportFolder(string path, bool importSubfolders);
-        void ClearPaths();
-        void AddPaths(string[] fileNames);
-        void StartSession();
     }
 }

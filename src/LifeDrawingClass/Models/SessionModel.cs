@@ -20,33 +20,20 @@
 namespace LifeDrawingClass.Models
 {
     using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
     using CommunityToolkit.Mvvm.ComponentModel;
+    using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Configuration;
+    using LifeDrawingClass.Core.Image;
 
     public class SessionModel: ObservableObject
 
     {
         #region Properties & Fields - Non-Public
 
-        private readonly ISession _session;
-
-        /// <summary>
-        ///     Key is the name of property of th <see cref="ISession" /> instance, and value is the name of property of the
-        ///     <see cref="SessionModel" /> instance.
-        ///     When <see cref="SessionModel" /> gets notified that one of properties of its <see cref="ISession" /> has change, it
-        ///     notifies its ViewModels by calling
-        ///     <see cref="ObservableObject.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)" /> with the name of
-        ///     its own property.
-        /// </summary>
-        private readonly Dictionary<string, string> _sessionPropertyBindings = new()
-        {
-            { nameof(ISession.CurrentSegmentIndex), nameof(CurrentSegmentIndex) },
-            { nameof(ISession.ImagePaths), nameof(ImagePaths) },
-            { nameof(ISession.Segments), nameof(MergedSegments) }
-        };
+        private ImageList _imageList;
+        private IReadOnlyList<SessionSegmentModel> _mergedSegments;
+        private int _interval;
 
         #endregion
 
@@ -54,8 +41,7 @@ namespace LifeDrawingClass.Models
 
         public SessionModel(ISession session)
         {
-            this._session = session;
-            session.PropertyChanged += this.SessionPropertyChanged;
+            this.Initialize(session);
         }
 
         #endregion
@@ -64,27 +50,20 @@ namespace LifeDrawingClass.Models
 
         public int CurrentSegmentIndex;
 
-        public IReadOnlyList<string> ImagePaths => this._session.ImagePaths;
+        public IReadOnlyList<string> ImagePaths => this._imageList.AsList();
 
-        public IReadOnlyList<SessionSegmentModel> MergedSegments =>
-            SessionSegmentModel.MergeSegment(this._session.Segments);
-
-        public IReadOnlyList<SessionSegmentModel> Segments
+        public IReadOnlyList<SessionSegmentModel> MergedSegments
         {
-            get => this._session.Segments
-                .Select(s => new SessionSegmentModel(s.Type, s.DurationMilliseconds, 1)).ToList();
-            set
-            {
-                this._session.Segments = SessionSegmentModel.ExpandSegments(value);
-                this.OnPropertyChanged(nameof(this.MergedSegments));
-                this.OnPropertyChanged(nameof(this.Segments));
-            }
+            get => this._mergedSegments;
+            set => this.SetProperty(ref this._mergedSegments,
+                SessionSegmentModel.MergeSegment(SessionSegmentModel.ExpandSegments(value)),
+                nameof(this.MergedSegments));
         }
 
         public int Interval
         {
-            get => this._session.Interval;
-            set => this._session.Interval = value;
+            get => this._interval;
+            set => this.SetProperty(ref this._interval, value, nameof(this.Interval));
         }
 
         #endregion
@@ -94,16 +73,14 @@ namespace LifeDrawingClass.Models
         #region Methods Other
 
         public void ImportFolder(string path, bool importSubfolders) =>
-            this._session.ImportFolder(path, importSubfolders);
+            this._imageList.ImportFolder(path, importSubfolders);
 
-        public void ClearPaths() => this._session.ClearPaths();
+        public void ClearPaths() => this._imageList.Clear();
 
         public void AddPaths(string[] fileNames) =>
-            this._session.AddPaths(fileNames);
+            this._imageList.AddRange(fileNames);
 
-        public void StartSession() => this._session.StartSession();
-
-        internal void SaveToConfigs() => this._session.SerializeToXml(Configurator.GetLastSessionFileName());
+        internal void SaveToConfigs() => this.GetSession().SerializeToXml(Configurator.GetLastSessionFileName());
 
         #endregion
 
@@ -113,8 +90,21 @@ namespace LifeDrawingClass.Models
 
         #region Methods Other
 
-        private void SessionPropertyChanged(object sender, PropertyChangedEventArgs e) =>
-            this.OnPropertyChanged(e.PropertyName != null ? this._sessionPropertyBindings[e.PropertyName] : null);
+        private void Initialize(ISession session)
+        {
+            this._imageList = new ImageList(session.ImagePaths);
+            this._mergedSegments = SessionSegmentModel.MergeSegment(session.Segments);
+            this._interval = session.Interval;
+            this.OnPropertyChanged();
+        }
+
+        private ISession GetSession() => new Session()
+        {
+            ImagePaths = this.ImagePaths,
+            Segments = SessionSegmentModel.ExpandSegments(this.MergedSegments),
+            CurrentSegmentIndex = -1,
+            Interval = this.Interval
+        };
 
         #endregion
 

@@ -21,6 +21,7 @@ namespace LifeDrawingClass.Business
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.IO;
     using System.Runtime.Serialization;
     using LifeDrawingClass.Business.Interfaces;
@@ -95,6 +96,7 @@ namespace LifeDrawingClass.Business
         public int NumberOfBreaks { get; set; }
 
         /// <inheritdoc />
+        [DataMember]
         public bool IsSimplified { get; set; }
 
         /// <inheritdoc />
@@ -106,18 +108,13 @@ namespace LifeDrawingClass.Business
 
         #region Methods Stat
 
-        public static List<ISessionSegment> GetSegments(ISessionProperties sessionProperties)
-        {
-            switch (sessionProperties.DesignType)
+        public static List<ISessionSegment> GetSegments(ISessionProperties sessionProperties) =>
+            sessionProperties.DesignType switch
             {
-                case SessionSegmentDesignType.Automatic:
-                    return SessionSegmentsDesigner.DesignSessionSegments(sessionProperties);
-                case SessionSegmentDesignType.Manual:
-                    throw new NotImplementedException();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
+                SessionSegmentDesignType.Automatic => SessionSegmentsDesigner.DesignSessionSegments(sessionProperties),
+                SessionSegmentDesignType.Manual => throw new NotImplementedException(),
+                _ => throw new InvalidEnumArgumentException("Unknown design type.")
+            };
 
         #endregion
 

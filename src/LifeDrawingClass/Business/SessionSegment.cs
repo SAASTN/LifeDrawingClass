@@ -21,9 +21,7 @@ namespace LifeDrawingClass.Business
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.IO;
-    using System.Runtime.CompilerServices;
     using System.Runtime.Serialization;
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Serialization;
@@ -39,10 +37,6 @@ namespace LifeDrawingClass.Business
 
         #region Properties & Fields - Non-Public
 
-        [DataMember] private int _groupId;
-
-        [DataMember] private SessionSegmentType _type;
-
         [DataMember] private int _durationMilliseconds = MinimumSegmentDuration;
 
         #endregion
@@ -50,26 +44,12 @@ namespace LifeDrawingClass.Business
         #region Properties Impl - Public
 
         /// <inheritdoc />
-        public int GroupId
-        {
-            get => this._groupId;
-            set
-            {
-                this._groupId = value;
-                this.OnPropertyChanged(nameof(this.GroupId));
-            }
-        }
+        [DataMember]
+        public int GroupId { get; set; }
 
         /// <inheritdoc />
-        public SessionSegmentType Type
-        {
-            get => this._type;
-            set
-            {
-                this._type = value;
-                this.OnPropertyChanged(nameof(this.Type));
-            }
-        }
+        [DataMember]
+        public SessionSegmentType Type { get; set; }
 
         /// <inheritdoc />
         public int DurationMilliseconds
@@ -84,7 +64,6 @@ namespace LifeDrawingClass.Business
                 }
 
                 this._durationMilliseconds = value;
-                this.OnPropertyChanged(nameof(this.DurationMilliseconds));
             }
         }
 
@@ -129,20 +108,6 @@ namespace LifeDrawingClass.Business
             XmlSerializationUtils.DeserializeFromStream<SessionSegment>(stream);
 
         #endregion
-
-        #region Methods Other
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        #endregion
-
-        #endregion
-
-        #region Events
-
-        /// <inheritdoc />
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
     }

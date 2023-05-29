@@ -21,7 +21,6 @@ namespace LifeDrawingClass.ViewModels
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
     using System.Windows;
     using System.Windows.Input;
@@ -39,26 +38,6 @@ namespace LifeDrawingClass.ViewModels
     public class NewSessionViewModel: ObservableObject
     {
         #region Properties & Fields - Non-Public
-
-        /// <summary>
-        ///     Key is the name of property of th <see cref="SessionModel" /> instance, and value is the name of property of the
-        ///     <see cref="NewSessionViewModel" /> instance.
-        ///     When <see cref="SessionModel" /> gets notified that one of properties of its <see cref="SessionModel" /> has
-        ///     change, it
-        ///     notifies its View by calling
-        ///     <see cref="ObservableObject.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs)" /> with the name of
-        ///     its own property.
-        /// </summary>
-        private readonly Dictionary<string, string> _sessionModelPropertyBindings = new()
-        {
-            {
-                nameof(Models.SessionModel.CurrentSegmentIndex),
-                nameof(Models.SessionModel.CurrentSegmentIndex)
-            }, // not bound yet
-            { nameof(Models.SessionModel.ImagePaths), nameof(ImagePaths) },
-            { nameof(Models.SessionModel.Segments), nameof(SessionModel) },
-            { nameof(Models.SessionModel.MergedSegments), nameof(SessionModel) }
-        };
 
         private SessionPropertiesModel _sessionPropertiesModel;
 
@@ -79,7 +58,6 @@ namespace LifeDrawingClass.ViewModels
         {
             this._sessionPropertiesModel = sessionPropertiesModel;
             this.SessionModel = sessionModel;
-            sessionModel.PropertyChanged += this.SessionModelOnPropertyChanged;
         }
 
         #endregion
@@ -89,7 +67,8 @@ namespace LifeDrawingClass.ViewModels
         public SessionModel SessionModel { get; }
 
         public ICommand StartSessionCommand => this._startSessionCommand ??= new RelayCommand(this.StartSession);
-        public ICommand ClearPathsCommand => this._clearPathsCommand ??= new RelayCommand(this.SessionModel.ClearPaths);
+        public ICommand ClearPathsCommand => this._clearPathsCommand ??= new RelayCommand(this.ClearPaths);
+
         public ICommand AddPathsCommand => this._addPathsCommand ??= new RelayCommand(this.AddPaths);
 
         public ICommand AddPathsFromFolderCommand =>
@@ -131,6 +110,12 @@ namespace LifeDrawingClass.ViewModels
 
         #region Methods Other
 
+        private void ClearPaths()
+        {
+            this.SessionModel.ClearPaths();
+            this.OnPropertyChanged(nameof(this.ImagePaths));
+        }
+
         private void EditSessionSegments()
         {
             SessionPropertiesViewModel viewModel = new(this._sessionPropertiesModel);
@@ -141,7 +126,7 @@ namespace LifeDrawingClass.ViewModels
             viewModel.ClosingRequest += (_, _) => window.Close();
             window.ShowDialog();
             this._sessionPropertiesModel = viewModel.Result;
-            this.SessionModel.Segments = this._sessionPropertiesModel.Segments;
+            this.SessionModel.MergedSegments = this._sessionPropertiesModel.Segments;
         }
 
         private void AlterTheme()
@@ -151,12 +136,6 @@ namespace LifeDrawingClass.ViewModels
             this.OnPropertyChanged(nameof(this.LightThemeButtonVisible));
             this.OnPropertyChanged(nameof(this.DarkThemeButtonVisible));
         }
-
-        private void SessionModelOnPropertyChanged(object sender, PropertyChangedEventArgs e) =>
-            this.OnPropertyChanged(e.PropertyName != null
-                ? this._sessionModelPropertyBindings[e.PropertyName] ??
-                  throw new NullReferenceException("Unknown property name.")
-                : null);
 
         private void StartSession()
         {

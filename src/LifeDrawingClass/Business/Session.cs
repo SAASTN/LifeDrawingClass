@@ -20,10 +20,8 @@
 namespace LifeDrawingClass.Business
 {
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.IO;
     using System.Linq;
-    using System.Runtime.CompilerServices;
     using System.Runtime.Serialization;
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Image;
@@ -36,8 +34,6 @@ namespace LifeDrawingClass.Business
 
         [DataMember] private ImageList _imageList;
 
-        private int _currentSegmentIndex;
-
         /// <remarks>
         ///     The internal field is declared as a list of <see cref="SessionSegment" />s instead of
         ///     <see cref="ISessionSegment" />s for serialization, as <see cref="DataContractSerializer" /> does not support
@@ -48,54 +44,37 @@ namespace LifeDrawingClass.Business
 
         #endregion
 
+        #region Constructors
+
+        public Session()
+        {
+            this._segments = SessionSegmentsDesigner.DesignSessionSegments(new SessionProperties())
+                .Cast<SessionSegment>().ToList();
+        }
+
+        #endregion
+
         #region Properties Impl - Public
 
         public IReadOnlyList<string> ImagePaths
         {
             get => (this._imageList ??= new ImageList()).AsList();
-            set
-            {
-                this._imageList = new ImageList(value.ToList());
-                this.OnPropertyChanged(nameof(this.ImagePaths));
-            }
+            set => this._imageList = new ImageList(value?.ToList());
         }
 
         /// <inheritdoc />
 
         public IReadOnlyList<ISessionSegment> Segments
         {
-            get => this._segments ??= new List<SessionSegment>()
-            {
-                new() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
-                new() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
-                new() { DurationMilliseconds = 61234, Type = SessionSegmentType.WarmUp },
-                new() { DurationMilliseconds = 6023456, Type = SessionSegmentType.LongPose },
-                new() { DurationMilliseconds = 16654, Type = SessionSegmentType.CoolDown },
-                new() { DurationMilliseconds = 16725, Type = SessionSegmentType.Break }
-            };
-            set
-            {
-                if (value != null)
-                {
-                    this._segments = value.Cast<SessionSegment>().ToList();
-                    this.OnPropertyChanged(nameof(this.Segments));
-                }
-            }
+            get => this._segments;
+            set => this._segments = value.Cast<SessionSegment>().ToList();
         }
 
         [DataMember] public int Interval { get; set; }
 
         /// <inheritdoc />
         [DataMember]
-        public int CurrentSegmentIndex
-        {
-            get => this._currentSegmentIndex;
-            set
-            {
-                this._currentSegmentIndex = value;
-                this.OnPropertyChanged(nameof(this.CurrentSegmentIndex));
-            }
-        }
+        public int CurrentSegmentIndex { get; set; }
 
         #endregion
 
@@ -108,27 +87,6 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         public void SerializeToStream(Stream stream) => XmlSerializationUtils.SerializeToStream(this, stream);
-
-        public void ImportFolder(string path, bool importSubfolders)
-        {
-            this._imageList.ImportFolder(path, importSubfolders);
-            this.OnPropertyChanged(nameof(this.ImagePaths));
-        }
-
-        public void ClearPaths()
-        {
-            this._imageList.Clear();
-            this.CurrentSegmentIndex = -1;
-            this.OnPropertyChanged(nameof(this.ImagePaths));
-        }
-
-        public void AddPaths(string[] fileNames)
-        {
-            this._imageList.AddRange(fileNames);
-            this.OnPropertyChanged(nameof(this.ImagePaths));
-        }
-
-        public void StartSession() => this.StartSegment(0);
 
         #endregion
 
@@ -143,21 +101,6 @@ namespace LifeDrawingClass.Business
             XmlSerializationUtils.DeserializeFromStream<Session>(stream);
 
         #endregion
-
-        #region Methods Other
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        private void StartSegment(int segmentIndex) => this.CurrentSegmentIndex = segmentIndex;
-
-        #endregion
-
-        #endregion
-
-        #region Events
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
     }

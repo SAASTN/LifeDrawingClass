@@ -36,7 +36,9 @@ namespace LifeDrawingClass.Core.Image
 
         #region Properties & Fields - Non-Public
 
+#pragma warning disable IDE0044 // Add readonly modifier
         [DataMember] private List<string> _paths = new();
+#pragma warning restore IDE0044 // Add readonly modifier
 
         #endregion
 
@@ -51,9 +53,12 @@ namespace LifeDrawingClass.Core.Image
         {
         }
 
-        public ImageList(ICollection<string> items)
+        public ImageList(IEnumerable<string> items)
         {
-            this.AddRange(items);
+            if (items != null)
+            {
+                this.AddRange(items.ToList());
+            }
         }
 
         #endregion
@@ -66,7 +71,7 @@ namespace LifeDrawingClass.Core.Image
 
         internal void AddRange(ICollection<string> newItems)
         {
-            this._paths.AddRange(newItems.Where(np => !this._paths.Contains(np)));
+            this._paths.AddRange(newItems.Distinct().Where(np => !this._paths.Contains(np)));
             this._paths.Sort();
         }
 

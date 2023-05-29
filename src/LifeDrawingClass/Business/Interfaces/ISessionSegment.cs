@@ -19,10 +19,9 @@
 
 namespace LifeDrawingClass.Business.Interfaces
 {
-    using System.ComponentModel;
     using LifeDrawingClass.Core.Serialization;
 
-    public interface ISessionSegment: INotifyPropertyChanged, ISerializableObject
+    public interface ISessionSegment: ISerializableObject
     {
         /// <summary>
         ///     in cases when a break is in middle of a long-pose segment, the long-pose will break into two segments, but both
