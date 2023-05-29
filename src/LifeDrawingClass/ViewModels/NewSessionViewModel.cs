@@ -55,7 +55,9 @@ namespace LifeDrawingClass.ViewModels
                 nameof(Models.SessionModel.CurrentSegmentIndex),
                 nameof(Models.SessionModel.CurrentSegmentIndex)
             }, // not bound yet
-            { nameof(Models.SessionModel.ImagePaths), nameof(ImagePaths) }
+            { nameof(Models.SessionModel.ImagePaths), nameof(ImagePaths) },
+            { nameof(Models.SessionModel.Segments), nameof(SessionModel) },
+            { nameof(Models.SessionModel.MergedSegments), nameof(SessionModel) }
         };
 
         private SessionPropertiesModel _sessionPropertiesModel;
@@ -139,7 +141,7 @@ namespace LifeDrawingClass.ViewModels
             viewModel.ClosingRequest += (_, _) => window.Close();
             window.ShowDialog();
             this._sessionPropertiesModel = viewModel.Result;
-            //TODO: SessionModel.Segments = this._sessionPropertiesModel.Segment;
+            this.SessionModel.Segments = this._sessionPropertiesModel.Segments;
         }
 
         private void AlterTheme()

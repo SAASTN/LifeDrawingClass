@@ -31,12 +31,10 @@
                     Style="{DynamicResource DefaultTextBlockStyle}" />
                 <TextBox
                     Text="{Binding SessionModel.Interval}"
-                    Margin="{StaticResource TopToBottomControlMargin}"
-                    Style="{DynamicResource DefaultTextBoxStyle}" />
+                    Margin="{StaticResource TopToBottomControlMargin}" />
                 <TextBlock
                     Text="Session segments:"
-                    Margin="{StaticResource TopToBottomControlMargin}"
-                    Style="{DynamicResource DefaultTextBlockStyle}" />
+                    Margin="{StaticResource TopToBottomControlMargin}" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition
@@ -51,7 +49,6 @@
                     <Button
                         Grid.Column="1"
                         Command="{Binding EditSessionSegmentsCommand}"
-                        Style="{DynamicResource DefaultButtonStyle}"
                         Margin="{StaticResource TopToBottomControlMargin}"
                         ToolTip="Edit session segments ..."
                         Width="45"
@@ -67,8 +64,7 @@
 
                 <TextBlock
                     Text="Image Paths:"
-                    Margin="{StaticResource TopToBottomControlMargin}"
-                    Style="{DynamicResource DefaultTextBlockStyle}" />
+                    Margin="{StaticResource TopToBottomControlMargin}" />
             </StackPanel>
             <Grid
                 Grid.Row="1">
@@ -85,7 +81,6 @@
                     TextWrapping="NoWrap"
                     IsReadOnly="True"
                     Margin="{StaticResource LeftToRightControlMargin}"
-                    Style="{DynamicResource DefaultTextBoxStyle}"
                     VerticalScrollBarVisibility="Auto"
                     HorizontalScrollBarVisibility="Auto" />
 
@@ -95,7 +90,6 @@
                     Orientation="Vertical">
                     <Button
                         Command="{Binding AddPathsCommand}"
-                        Style="{DynamicResource DefaultButtonStyle}"
                         Margin="{StaticResource TopToBottomControlMargin}"
                         ToolTip="Add images ...">
                         <Rectangle
@@ -112,7 +106,6 @@
                     </Button>
                     <Button
                         Command="{Binding AddPathsFromFolderCommand}"
-                        Style="{DynamicResource DefaultButtonStyle}"
                         Margin="{StaticResource TopToBottomControlMargin}"
                         ToolTip="Add all images in folder ...">
                         <Rectangle
@@ -129,7 +122,6 @@
                     </Button>
                     <Button
                         Command="{Binding ClearPathsCommand}"
-                        Style="{DynamicResource DefaultButtonStyle}"
                         Margin="{StaticResource TopToBottomControlMargin}"
                         ToolTip="Remove all images">
 
@@ -155,7 +147,6 @@
                 Grid.Row="2"
                 Content="Start Session"
                 Command="{Binding StartSessionCommand}"
-                Style="{DynamicResource DefaultButtonStyle}"
                 Margin="{StaticResource BottomControlMargin}" />
         </Grid>
     </Grid>

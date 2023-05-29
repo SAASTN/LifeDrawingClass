@@ -96,8 +96,8 @@ namespace LifeDrawingClass.Views.Controls
         private void CreateObjects()
         {
             Style borderStyle = (Style) this.FindResource("SegmentStyle");
-            Style textStyle = (Style) this.FindResource("TextStyle");
             this.StackPanel.Children.Clear();
+            Thickness margin = new(3);
 
             foreach (SessionSegmentModel segment in this.Segments)
             {
@@ -106,7 +106,6 @@ namespace LifeDrawingClass.Views.Controls
                     Style = borderStyle,
                     DataContext = segment,
                     Background = this.GetSegmentBrush(segment.Type)
-                    //Width = this.Height - Margin.Bottom - Margin.Top
                 };
 
                 this.StackPanel.Children.Add(border);
@@ -114,7 +113,7 @@ namespace LifeDrawingClass.Views.Controls
                 {
                     Text = segment.DurationText, VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
-                    Style = textStyle,
+                    Margin = margin,
                     Opacity = 1
                 };
             }

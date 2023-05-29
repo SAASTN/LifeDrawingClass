@@ -19,6 +19,7 @@
 
 namespace LifeDrawingClass.Business
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization;
@@ -28,6 +29,21 @@ namespace LifeDrawingClass.Business
     [DataContract]
     public class SessionProperties: ISessionProperties
     {
+        #region Constructors
+
+        public SessionProperties()
+        {
+            this.DesignType = SessionSegmentDesignType.Automatic;
+            this.SessionDuration = 120;
+            this.NumberOfLongPoses = 3;
+            this.AddWarmUp = true;
+            this.AddCoolDown = false;
+            this.AddBreaks = false;
+            this.IsSimplified = true;
+        }
+
+        #endregion
+
         #region Properties Impl - Public
 
         /// <inheritdoc />
@@ -36,7 +52,7 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         [DataMember]
-        public bool SessionDuration { get; set; }
+        public int SessionDuration { get; set; }
 
         /// <inheritdoc />
         [DataMember]
@@ -72,11 +88,14 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         [DataMember]
-        public double BreakPercent { get; set; }
+        public int BreaksDuration { get; set; }
 
         /// <inheritdoc />
         [DataMember]
-        public double NumberOfBreak { get; set; }
+        public int NumberOfBreaks { get; set; }
+
+        /// <inheritdoc />
+        public bool IsSimplified { get; set; }
 
         /// <inheritdoc />
         public string ManualSegmentsDefinition { get; set; }
@@ -85,6 +104,23 @@ namespace LifeDrawingClass.Business
 
         #region Methods - Public
 
+        #region Methods Stat
+
+        public static List<ISessionSegment> GetSegments(ISessionProperties sessionProperties)
+        {
+            switch (sessionProperties.DesignType)
+            {
+                case SessionSegmentDesignType.Automatic:
+                    return SessionSegmentsDesigner.DesignSessionSegments(sessionProperties);
+                case SessionSegmentDesignType.Manual:
+                    throw new NotImplementedException();
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        #endregion
+
         #region Methods Impl
 
         /// <inheritdoc />
@@ -92,9 +128,6 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         public void SerializeToStream(Stream stream) => XmlSerializationUtils.SerializeToStream(this, stream);
-
-        /// <inheritdoc />
-        public List<ISessionSegment> GetSegments() => throw new System.NotImplementedException();
 
         #endregion
 

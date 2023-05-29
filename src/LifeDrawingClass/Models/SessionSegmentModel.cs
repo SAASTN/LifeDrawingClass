@@ -21,6 +21,7 @@ namespace LifeDrawingClass.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
 
@@ -94,6 +95,17 @@ namespace LifeDrawingClass.Models
             return results;
         }
 
+        public static List<ISessionSegment> ExpandSegments(IEnumerable<SessionSegmentModel> segments)
+        {
+            List<ISessionSegment> results = new();
+            foreach (SessionSegmentModel segment in segments)
+            {
+                results.AddRange(Enumerable.Range(0, segment.Count).Select(_ => new SessionSegment()
+                    { DurationMilliseconds = segment.Duration, GroupId = -1, Type = segment.Type }));
+            }
+
+            return results;
+        }
         #endregion
 
         #endregion

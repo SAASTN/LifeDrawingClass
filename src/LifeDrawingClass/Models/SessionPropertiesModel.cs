@@ -20,6 +20,8 @@
 namespace LifeDrawingClass.Models
 {
     using System;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using CommunityToolkit.Mvvm.ComponentModel;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
@@ -31,6 +33,11 @@ namespace LifeDrawingClass.Models
 
         private SessionSegmentDesignType _designType;
         private int _sessionDuration;
+        private int _numberOfLongPoses;
+        private bool _addWarmUp;
+        private bool _addCoolDown;
+        private bool _addBreaks;
+        private bool _isSimplified;
 
         #endregion
 
@@ -45,12 +52,16 @@ namespace LifeDrawingClass.Models
 
         #region Properties & Fields - Public
 
+        public ObservableCollection<SessionSegmentModel> Segments =>
+            new(SessionSegmentModel.MergeSegment(SessionProperties.GetSegments(this.GetProperties())));
+
         public SessionSegmentDesignType DesignType
         {
             get => this._designType;
             set => this.SetProperty(ref this._designType, value, nameof(this.DesignType));
         }
 
+        /// <inheritdoc cref="ISessionProperties.SessionDuration" />
         public int SessionDuration
         {
             get => this._sessionDuration;
@@ -59,6 +70,41 @@ namespace LifeDrawingClass.Models
                 value = (int) (Math.Round(value / 5.0) * 5.0);
                 this.SetProperty(ref this._sessionDuration, value, nameof(this.SessionDuration));
             }
+        }
+
+        /// <inheritdoc cref="ISessionProperties.NumberOfLongPoses" />
+        public int NumberOfLongPoses
+        {
+            get => this._numberOfLongPoses;
+            set => this.SetProperty(ref this._numberOfLongPoses, value, nameof(this.NumberOfLongPoses));
+        }
+
+        /// <inheritdoc cref="ISessionProperties.AddWarmUp" />
+        public bool AddWarmUp
+        {
+            get => this._addWarmUp;
+            set => this.SetProperty(ref this._addWarmUp, value, nameof(this.AddWarmUp));
+        }
+
+        /// <inheritdoc cref="ISessionProperties.AddCoolDown" />
+        public bool AddCoolDown
+        {
+            get => this._addCoolDown;
+            set => this.SetProperty(ref this._addCoolDown, value, nameof(this.AddCoolDown));
+        }
+
+        /// <inheritdoc cref="ISessionProperties.AddBreaks" />
+        public bool AddBreaks
+        {
+            get => this._addBreaks;
+            set => this.SetProperty(ref this._addBreaks, value, nameof(this.AddBreaks));
+        }
+
+        /// <inheritdoc cref="ISessionProperties.IsSimplified" />
+        public bool IsSimplified
+        {
+            get => this._isSimplified;
+            set => this.SetProperty(ref this._isSimplified, value, nameof(this.IsSimplified));
         }
 
         #endregion
@@ -72,7 +118,13 @@ namespace LifeDrawingClass.Models
 
         public ISessionProperties GetProperties() => new SessionProperties()
         {
-            DesignType = this.DesignType
+            DesignType = this.DesignType,
+            SessionDuration = this.SessionDuration,
+            NumberOfLongPoses = this.NumberOfLongPoses,
+            AddWarmUp = this.AddWarmUp,
+            AddCoolDown = this.AddCoolDown,
+            AddBreaks = this.AddBreaks,
+            IsSimplified = this.IsSimplified
         };
 
         #endregion
@@ -81,11 +133,31 @@ namespace LifeDrawingClass.Models
 
         #region Methods - Non-Public
 
+        #region Methods Impl
+
+        /// <inheritdoc />
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if ((e.PropertyName ?? "") != nameof(this.Segments))
+            {
+                this.OnPropertyChanged(nameof(this.Segments));
+            }
+        }
+
+        #endregion
+
         #region Methods Other
 
         private void Initialize(ISessionProperties properties)
         {
             this._designType = properties.DesignType;
+            this._sessionDuration = properties.SessionDuration;
+            this._numberOfLongPoses = properties.NumberOfLongPoses;
+            this._addWarmUp = properties.AddWarmUp;
+            this._addCoolDown = properties.AddCoolDown;
+            this._addBreaks = properties.AddBreaks;
+            this._isSimplified = properties.IsSimplified;
             this.OnPropertyChanged();
         }
 

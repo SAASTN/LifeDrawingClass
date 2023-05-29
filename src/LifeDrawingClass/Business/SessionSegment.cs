@@ -20,6 +20,7 @@
 namespace LifeDrawingClass.Business
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
     using System.Runtime.CompilerServices;
@@ -90,6 +91,22 @@ namespace LifeDrawingClass.Business
         #endregion
 
         #region Methods - Public
+
+        #region Methods Stat
+
+        public static IEnumerable<int> GetStartTimes(IEnumerable<ISessionSegment> segments)
+        {
+            int sum = 0;
+
+            foreach (ISessionSegment segment in segments)
+            {
+                yield return sum;
+
+                sum += segment.DurationMilliseconds;
+            }
+        }
+
+        #endregion
 
         #region Methods Impl
 

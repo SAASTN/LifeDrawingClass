@@ -20,10 +20,13 @@
 namespace LifeDrawingClass.ViewModels
 {
     using System;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using System.Windows.Input;
     using CommunityToolkit.Mvvm.ComponentModel;
     using CommunityToolkit.Mvvm.Input;
     using LifeDrawingClass.Business;
+    using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Models;
 
     public class SessionPropertiesViewModel: ObservableObject
@@ -36,7 +39,8 @@ namespace LifeDrawingClass.ViewModels
         private readonly SessionPropertiesModel _propertiesModelOriginal;
 
         /// <summary>
-        ///     It is a deep copy of the <see cref="_propertiesModelOriginal" />. It is used in case user accepts changes. View-model
+        ///     It is a deep copy of the <see cref="_propertiesModelOriginal" />. It is used in case user accepts changes.
+        ///     View-model
         ///     uses this instance and the window is bound to it.
         /// </summary>
         private readonly SessionPropertiesModel _propertiesModelCopy;
@@ -52,6 +56,7 @@ namespace LifeDrawingClass.ViewModels
         {
             this._propertiesModelOriginal = propertiesModel;
             this._propertiesModelCopy = new SessionPropertiesModel(propertiesModel.GetProperties());
+            this.Result = this._propertiesModelOriginal;
         }
 
         #endregion
@@ -60,8 +65,11 @@ namespace LifeDrawingClass.ViewModels
 
         public ICommand OkCommand => this._ok ??= new RelayCommand(this.Ok);
         public ICommand CancelCommand => this._cancel ??= new RelayCommand(this.Cancel);
+
+        public ObservableCollection<SessionSegmentModel> Segments => this._propertiesModelCopy.Segments;
         public SessionPropertiesModel Result { get; private set; }
 
+        /// <inheritdoc cref="ISessionProperties.DesignType" />
         public SessionSegmentDesignType DesignType
         {
             get => this._propertiesModelCopy.DesignType;
@@ -72,6 +80,7 @@ namespace LifeDrawingClass.ViewModels
             }
         }
 
+        /// <inheritdoc cref="ISessionProperties.SessionDuration" />
         public int SessionDuration
         {
             get => this._propertiesModelCopy.SessionDuration;
@@ -82,9 +91,78 @@ namespace LifeDrawingClass.ViewModels
             }
         }
 
+        /// <inheritdoc cref="ISessionProperties.NumberOfLongPoses" />
+        public int NumberOfLongPoses
+        {
+            get => this._propertiesModelCopy.NumberOfLongPoses;
+            set
+            {
+                this._propertiesModelCopy.NumberOfLongPoses = value;
+                this.OnPropertyChanged(nameof(this.NumberOfLongPoses));
+            }
+        }
+
+        /// <inheritdoc cref="ISessionProperties.AddWarmUp" />
+        public bool AddWarmUp
+        {
+            get => this._propertiesModelCopy.AddWarmUp;
+            set
+            {
+                this._propertiesModelCopy.AddWarmUp = value;
+                this.OnPropertyChanged(nameof(this.AddWarmUp));
+            }
+        }
+
+        /// <inheritdoc cref="ISessionProperties.AddCoolDown" />
+        public bool AddCoolDown
+        {
+            get => this._propertiesModelCopy.AddCoolDown;
+            set
+            {
+                this._propertiesModelCopy.AddCoolDown = value;
+                this.OnPropertyChanged(nameof(this.AddCoolDown));
+            }
+        }
+
+        /// <inheritdoc cref="ISessionProperties.AddBreaks" />
+        public bool AddBreaks
+        {
+            get => this._propertiesModelCopy.AddBreaks;
+            set
+            {
+                this._propertiesModelCopy.AddBreaks = value;
+                this.OnPropertyChanged(nameof(this.AddBreaks));
+            }
+        }
+
+        /// <inheritdoc cref="ISessionProperties.IsSimplified" />
+        public bool IsSimplified
+        {
+            get => this._propertiesModelCopy.IsSimplified;
+            set
+            {
+                this._propertiesModelCopy.IsSimplified = value;
+                this.OnPropertyChanged(nameof(this.IsSimplified));
+            }
+        }
+
         #endregion
 
         #region Methods - Non-Public
+
+        #region Methods Impl
+
+        /// <inheritdoc />
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if ((e.PropertyName ?? "") != nameof(this.Segments))
+            {
+                this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.Segments)));
+            }
+        }
+
+        #endregion
 
         #region Methods Other
 

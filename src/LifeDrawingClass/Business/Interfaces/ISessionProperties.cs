@@ -29,7 +29,7 @@ namespace LifeDrawingClass.Business.Interfaces
         /// <summary>
         ///     Total class length in minutes.
         /// </summary>
-        bool SessionDuration { get; set; }
+        int SessionDuration { get; set; }
 
         /// <summary>
         ///     Specifies whether the session starts with a warm-up.
@@ -66,14 +66,20 @@ namespace LifeDrawingClass.Business.Interfaces
         bool AddBreaks { get; set; }
 
         /// <summary>
-        ///     Determines the <b>approximate</b> ratio of the breaks duration to the total session time.
+        ///     Duration of each of break segments.
         /// </summary>
-        double BreakPercent { get; set; }
+        int BreaksDuration { get; set; }
 
-        double NumberOfBreak { get; set; }
+        int NumberOfBreaks { get; set; }
+
+        /// <summary>
+        ///     If true, the designer only uses <see cref="SessionDuration" />, <see cref="NumberOfLongPoses" />,
+        ///     <see cref="AddWarmUp" />, <see cref="AddCoolDown" />, and <see cref="AddBreaks" /> and decides about the rest of
+        ///     properties.
+        /// </summary>
+        bool IsSimplified { get; set; }
 
         string ManualSegmentsDefinition { get; set; }
 
-        List<ISessionSegment> GetSegments();
     }
 }

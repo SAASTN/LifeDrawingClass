@@ -17,7 +17,7 @@
                 <ResourceDictionary
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Dark.Blue.xaml" />
                 <ResourceDictionary
-                    Source="Graphics.xaml" />
+                    Source="Views/Resources/Graphics.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <system:Double
                 x:Key="CommonFontSize">16</system:Double>
@@ -52,7 +52,6 @@
 
 
             <Style
-                x:Key="DefaultButtonStyle"
                 BasedOn="{StaticResource MahApps.Styles.Button}"
                 TargetType="{x:Type Button}">
                 <Setter
@@ -66,7 +65,6 @@
                     Value="Normal" />
             </Style>
             <Style
-                x:Key="DefaultRadioButtonStyle"
                 BasedOn="{StaticResource MahApps.Styles.RadioButton}"
                 TargetType="{x:Type RadioButton}">
                 <Setter
@@ -80,7 +78,6 @@
                     Value="Normal" />
             </Style>
             <Style
-                x:Key="DefaultTextBoxStyle"
                 BasedOn="{StaticResource MahApps.Styles.TextBox}"
                 TargetType="{x:Type TextBox}">
                 <Setter
@@ -88,9 +85,14 @@
                     Value="{StaticResource CommonFontSize}" />
             </Style>
             <Style
-                x:Key="DefaultTextBlockStyle"
                 BasedOn="{StaticResource MahApps.Styles.TextBlock}"
                 TargetType="{x:Type TextBlock}">
+                <Setter
+                    Property="FontSize"
+                    Value="{StaticResource CommonFontSize}" />
+            </Style>
+            <Style
+                TargetType="mah:ToggleSwitch">
                 <Setter
                     Property="FontSize"
                     Value="{StaticResource CommonFontSize}" />

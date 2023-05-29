@@ -4,16 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:LifeDrawingClass.Views.Controls"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     mc:Ignorable="d"
     d:DesignHeight="450"
     d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
+            <!-- ReSharper disable Xaml.RedundantResource -->
             <Style
                 x:Key="SegmentStyle"
                 TargetType="{x:Type Border}">
+                <!-- ReSharper restore Xaml.RedundantResource -->
                 <Setter
                     Property="Margin"
                     Value="{StaticResource LeftToRightControlMargin}" />
@@ -35,6 +36,7 @@
             </Style>
             <system:Double
                 x:Key="DefaultOpacity">0.6</system:Double>
+            <!-- ReSharper disable Xaml.RedundantResource -->
             <SolidColorBrush
                 x:Key="WarmUpSegmentBrush"
                 Color="Orange"
@@ -49,24 +51,9 @@
                 Opacity="{StaticResource DefaultOpacity}" />
             <SolidColorBrush
                 x:Key="BreakSegmentBrush"
-                Color="DarkGray"
+                Color="LightGray"
                 Opacity="{StaticResource DefaultOpacity}" />
-            <Thickness
-                x:Key="TextMargin"
-                Left="{StaticResource CommonMarginSize}"
-                Right="{StaticResource CommonMarginSize}" />
-            <Style
-                x:Key="TextStyle"
-                BasedOn="{StaticResource DefaultTextBlockStyle}"
-                TargetType="TextBlock">
-                <Setter
-                    Property="FontWeight"
-                    Value="DemiBold" />
-                <Setter
-                    Property="Margin"
-                    Value="{StaticResource TextMargin}" />
-
-            </Style>
+            <!-- ReSharper restore Xaml.RedundantResource -->
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>

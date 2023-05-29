@@ -44,7 +44,8 @@ namespace LifeDrawingClass.Models
         private readonly Dictionary<string, string> _sessionPropertyBindings = new()
         {
             { nameof(ISession.CurrentSegmentIndex), nameof(CurrentSegmentIndex) },
-            { nameof(ISession.ImagePaths), nameof(ImagePaths) }
+            { nameof(ISession.ImagePaths), nameof(ImagePaths) },
+            { nameof(ISession.Segments), nameof(MergedSegments) }
         };
 
         #endregion
@@ -65,11 +66,20 @@ namespace LifeDrawingClass.Models
 
         public IReadOnlyList<string> ImagePaths => this._session.ImagePaths;
 
-        public IReadOnlyList<SessionSegmentModel> Segments => this._session.Segments
-            .Select(s => new SessionSegmentModel(s.Type, s.DurationMilliseconds, 1)).ToList();
-
         public IReadOnlyList<SessionSegmentModel> MergedSegments =>
             SessionSegmentModel.MergeSegment(this._session.Segments);
+
+        public IReadOnlyList<SessionSegmentModel> Segments
+        {
+            get => this._session.Segments
+                .Select(s => new SessionSegmentModel(s.Type, s.DurationMilliseconds, 1)).ToList();
+            set
+            {
+                this._session.Segments = SessionSegmentModel.ExpandSegments(value);
+                this.OnPropertyChanged(nameof(this.MergedSegments));
+                this.OnPropertyChanged(nameof(this.Segments));
+            }
+        }
 
         public int Interval
         {
