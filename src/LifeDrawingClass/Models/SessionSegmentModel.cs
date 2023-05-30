@@ -21,6 +21,7 @@ namespace LifeDrawingClass.Models
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
@@ -40,22 +41,7 @@ namespace LifeDrawingClass.Models
 
         #region Properties & Fields - Public
 
-        public string DurationText
-        {
-            get
-            {
-                TimeSpan duration = this.Duration;
-                int minutes = (int) duration.TotalMinutes;
-                int seconds = (duration.Seconds / 10) * 10;
-                string result = (minutes > 0 ? $"{minutes}'" : "") + (seconds > 0 ? $"{seconds}\"" : "");
-                if (this.Count > 1)
-                {
-                    result = $"{this.Count} × {result}";
-                }
-
-                return result;
-            }
-        }
+        public string DurationText => FormatDuration(this.Duration, this.Count);
 
         public SessionSegmentType Type { get; }
         public TimeSpan Duration { get; }
@@ -66,6 +52,35 @@ namespace LifeDrawingClass.Models
         #region Methods - Public
 
         #region Methods Stat
+
+        public static string FormatDuration(TimeSpan duration, int count)
+        {
+            string result;
+            if (duration.TotalMinutes > 120)
+            {
+                result = duration.ToString("h\\:mm", CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                int minutes = (int) duration.TotalMinutes;
+                result = minutes > 0 ? $"{minutes}'" : "";
+            }
+
+            int seconds = (int) (duration.Seconds / 10d) * 10;
+            result += seconds > 0 ? $"{seconds}\"" : "";
+            if (count > 1)
+            {
+                result = $"{count} × {result}";
+            }
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                result = "-";
+            }
+
+
+            return result;
+        }
 
         public static List<SessionSegmentModel> MergeSegment(IEnumerable<ISessionSegment> segments)
         {

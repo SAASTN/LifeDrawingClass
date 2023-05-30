@@ -36,6 +36,8 @@
             </Style>
             <system:Double
                 x:Key="DefaultOpacity">0.6</system:Double>
+            <system:Double
+                x:Key="TextOpacity">1</system:Double>
             <!-- ReSharper disable Xaml.RedundantResource -->
             <SolidColorBrush
                 x:Key="WarmUpSegmentBrush"
@@ -51,14 +53,135 @@
                 Opacity="{StaticResource DefaultOpacity}" />
             <SolidColorBrush
                 x:Key="BreakSegmentBrush"
-                Color="LightGray"
+                Color="Gray"
                 Opacity="{StaticResource DefaultOpacity}" />
+            <SolidColorBrush
+                x:Key="WarmUpSegmentBrushText"
+                Color="Orange"
+                Opacity="{StaticResource TextOpacity}" />
+            <SolidColorBrush
+                x:Key="LongPoseSegmentBrushText"
+                Color="ForestGreen"
+                Opacity="{StaticResource TextOpacity}" />
+            <SolidColorBrush
+                x:Key="CoolDownSegmentBrushText"
+                Color="DodgerBlue"
+                Opacity="{StaticResource TextOpacity}" />
+            <SolidColorBrush
+                x:Key="BreakSegmentBrushText"
+                Color="Gray"
+                Opacity="{StaticResource TextOpacity}" />
             <!-- ReSharper restore Xaml.RedundantResource -->
+            <Style
+                x:Key="CaptionStyle"
+                BasedOn="{StaticResource MahApps.Styles.TextBlock}"
+                TargetType="{x:Type TextBlock}">
+                <Setter
+                    Property="FontSize"
+                    Value="{StaticResource CommonFontSize}" />
+                <Setter
+                    Property="FontWeight"
+                    Value="Normal" />
+            </Style>
+            <Style
+                x:Key="ValueStyle"
+                TargetType="TextBlock"
+                BasedOn="{StaticResource CaptionStyle}">
+                <Setter
+                    Property="FontWeight"
+                    Value="DemiBold" />
+
+            </Style>
+            <Thickness
+                x:Key="GapMargin"
+                Left="10"
+                Top="{StaticResource CommonMarginSize}"
+                Bottom="{StaticResource CommonMarginSize}" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <StackPanel
-            Name="StackPanel"
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <WrapPanel
+            Name="SegmentsStackPanel"
+            Grid.Row="0"
+            MinHeight="30"
             Orientation="Horizontal" />
+        <WrapPanel
+            Name="TextsStackPanel"
+            Grid.Row="1"
+            Orientation="Horizontal">
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Warm-Up:"
+                    Margin="{StaticResource LeftToRightControlMargin}"
+                    Style="{StaticResource CaptionStyle}"
+                    Foreground="{StaticResource WarmUpSegmentBrushText}" />
+                <TextBlock
+                    Name="WarmUpText"
+                    Text="00:00"
+                    Margin="{StaticResource LeftToRightControlMargin}"
+                    Style="{StaticResource ValueStyle}"
+                    Foreground="{StaticResource WarmUpSegmentBrushText}" />
+            </StackPanel>
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Long Poses:"
+                    Margin="{StaticResource GapMargin}"
+                    Style="{StaticResource CaptionStyle}"
+                    Foreground="{StaticResource LongPoseSegmentBrushText}" />
+                <TextBlock
+                    Name="LongPosesText"
+                    Text="00:00"
+                    Margin="{StaticResource LeftToRightControlMargin}"
+                    Style="{StaticResource ValueStyle}"
+                    Foreground="{StaticResource LongPoseSegmentBrushText}" />
+            </StackPanel>
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Cool-Down:"
+                    Margin="{StaticResource GapMargin}"
+                    Style="{StaticResource CaptionStyle}"
+                    Foreground="{StaticResource CoolDownSegmentBrushText}" />
+                <TextBlock
+                    Name="CoolDownText"
+                    Text="00:00"
+                    Margin="{StaticResource LeftToRightControlMargin}"
+                    Style="{StaticResource ValueStyle}"
+                    Foreground="{StaticResource CoolDownSegmentBrushText}" />
+            </StackPanel>
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Break:"
+                    Margin="{StaticResource GapMargin}"
+                    Style="{StaticResource CaptionStyle}"
+                    Foreground="{StaticResource BreakSegmentBrushText}" />
+                <TextBlock
+                    Name="BreaksText"
+                    Text="00:00"
+                    Margin="{StaticResource LeftToRightControlMargin}"
+                    Style="{StaticResource ValueStyle}"
+                    Foreground="{StaticResource BreakSegmentBrushText}" />
+            </StackPanel>
+            <StackPanel
+                Orientation="Horizontal">
+                <TextBlock
+                    Text="Total:"
+                    Margin="{StaticResource GapMargin}"
+                    Style="{StaticResource CaptionStyle}" />
+                <TextBlock
+                    Name="TotalText"
+                    Text="00:00"
+                    Margin="{StaticResource LeftToRightControlMargin}"
+                    Style="{StaticResource ValueStyle}" />
+            </StackPanel>
+
+        </WrapPanel>
     </Grid>
 </UserControl>

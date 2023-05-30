@@ -183,7 +183,6 @@
                 </GroupBox.Header>
             </GroupBox>
             <controls:SessionSegmentsListControl
-                Height="40"
                 Segments="{Binding Segments}" />
             <StackPanel
                 Orientation="Horizontal"

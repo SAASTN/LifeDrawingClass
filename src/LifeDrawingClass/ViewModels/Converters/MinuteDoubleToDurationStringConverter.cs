@@ -35,7 +35,7 @@ namespace LifeDrawingClass.ViewModels.Converters
             value ??= 0.0;
             double minutes = (int) value;
             TimeSpan duration = TimeSpan.FromMinutes(minutes);
-            return duration.ToString("hh\\:mm");
+            return duration.ToString("hh\\:mm", CultureInfo.InvariantCulture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>

@@ -44,7 +44,6 @@
                     </Grid.ColumnDefinitions>
                     <controls:SessionSegmentsListControl
                         Grid.Column="0"
-                        Height="40"
                         Segments="{Binding SessionModel.MergedSegments}" />
                     <Button
                         Grid.Column="1"

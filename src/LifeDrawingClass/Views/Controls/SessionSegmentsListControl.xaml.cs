@@ -21,6 +21,7 @@ namespace LifeDrawingClass.Views.Controls
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Media;
@@ -96,7 +97,7 @@ namespace LifeDrawingClass.Views.Controls
         private void CreateObjects()
         {
             Style borderStyle = (Style) this.FindResource("SegmentStyle");
-            this.StackPanel.Children.Clear();
+            this.SegmentsStackPanel.Children.Clear();
             Thickness margin = new(3);
 
             foreach (SessionSegmentModel segment in this.Segments)
@@ -108,7 +109,7 @@ namespace LifeDrawingClass.Views.Controls
                     Background = this.GetSegmentBrush(segment.Type)
                 };
 
-                this.StackPanel.Children.Add(border);
+                this.SegmentsStackPanel.Children.Add(border);
                 border.Child = new TextBlock()
                 {
                     Text = segment.DurationText, VerticalAlignment = VerticalAlignment.Center,
@@ -117,6 +118,21 @@ namespace LifeDrawingClass.Views.Controls
                     Opacity = 1
                 };
             }
+
+            TimeSpan warmUps = TimeSpan.FromTicks(this.Segments.Where(s => s.Type == SessionSegmentType.WarmUp)
+                .Sum(s => s.Duration.Ticks * s.Count));
+            TimeSpan coolDowns = TimeSpan.FromTicks(this.Segments.Where(s => s.Type == SessionSegmentType.CoolDown)
+                .Sum(s => s.Duration.Ticks * s.Count));
+            TimeSpan longPoses = TimeSpan.FromTicks(this.Segments.Where(s => s.Type == SessionSegmentType.LongPose)
+                .Sum(s => s.Duration.Ticks * s.Count));
+            TimeSpan breaks = TimeSpan.FromTicks(this.Segments.Where(s => s.Type == SessionSegmentType.Break)
+                .Sum(s => s.Duration.Ticks * s.Count));
+            TimeSpan total = warmUps + longPoses + coolDowns + breaks;
+            this.WarmUpText.Text = SessionSegmentModel.FormatDuration(warmUps, 1);
+            this.LongPosesText.Text = SessionSegmentModel.FormatDuration(longPoses, 1);
+            this.CoolDownText.Text = SessionSegmentModel.FormatDuration(coolDowns, 1);
+            this.BreaksText.Text = SessionSegmentModel.FormatDuration(breaks, 1);
+            this.TotalText.Text = SessionSegmentModel.FormatDuration(total, 1);
         }
 
         private Brush GetSegmentBrush(SessionSegmentType type)
@@ -135,7 +151,7 @@ namespace LifeDrawingClass.Views.Controls
 
         private void UpdateSegmentColors()
         {
-            foreach (object border in this.StackPanel.Children)
+            foreach (object border in this.SegmentsStackPanel.Children)
             {
                 if (border is Border sessionBorder)
                 {
