@@ -81,13 +81,13 @@ namespace LifeDrawingClass.ViewModels
         }
 
         /// <inheritdoc cref="ISessionProperties.SessionDuration" />
-        public int SessionDuration
+        public int SessionDurationMinutes
         {
-            get => this._propertiesModelCopy.SessionDuration;
+            get => this._propertiesModelCopy.SessionDurationMinutes;
             set
             {
-                this._propertiesModelCopy.SessionDuration = value;
-                this.OnPropertyChanged(nameof(this.SessionDuration));
+                this._propertiesModelCopy.SessionDurationMinutes = value;
+                this.OnPropertyChanged(nameof(this.SessionDurationMinutes));
             }
         }
 

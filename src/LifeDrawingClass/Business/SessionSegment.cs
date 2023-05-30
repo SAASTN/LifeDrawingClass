@@ -31,13 +31,13 @@ namespace LifeDrawingClass.Business
     {
         #region Constants & Statics
 
-        private const int MinimumSegmentDuration = 10000; // in ms
+        private static readonly TimeSpan MinimumSegmentDuration = TimeSpan.FromSeconds(10);
 
         #endregion
 
         #region Properties & Fields - Non-Public
 
-        [DataMember] private int _durationMilliseconds = MinimumSegmentDuration;
+        [DataMember] private TimeSpan _duration = TimeSpan.FromTicks(MinimumSegmentDuration.Ticks);
 
         #endregion
 
@@ -52,18 +52,18 @@ namespace LifeDrawingClass.Business
         public SessionSegmentType Type { get; set; }
 
         /// <inheritdoc />
-        public int DurationMilliseconds
+        public TimeSpan Duration
         {
-            get => this._durationMilliseconds;
+            get => this._duration;
             set
             {
                 if (value < MinimumSegmentDuration)
                 {
                     throw new ArgumentOutOfRangeException(nameof(value),
-                        $"Segment must be longer than {MinimumSegmentDuration / 1000} seconds.");
+                        $"Segment must be longer than {MinimumSegmentDuration.TotalSeconds:F3} seconds.");
                 }
 
-                this._durationMilliseconds = value;
+                this._duration = value;
             }
         }
 
@@ -73,15 +73,15 @@ namespace LifeDrawingClass.Business
 
         #region Methods Stat
 
-        public static IEnumerable<int> GetStartTimes(IEnumerable<ISessionSegment> segments)
+        public static IEnumerable<TimeSpan> GetStartTimes(IEnumerable<ISessionSegment> segments)
         {
-            int sum = 0;
+            TimeSpan sum = new();
 
             foreach (ISessionSegment segment in segments)
             {
                 yield return sum;
 
-                sum += segment.DurationMilliseconds;
+                sum += segment.Duration;
             }
         }
 

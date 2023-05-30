@@ -35,7 +35,7 @@ namespace LifeDrawingClass.Business
         public SessionProperties()
         {
             this.DesignType = SessionSegmentDesignType.Automatic;
-            this.SessionDuration = 120;
+            this.SessionDuration = TimeSpan.FromMinutes(120);
             this.NumberOfLongPoses = 3;
             this.AddWarmUp = true;
             this.AddCoolDown = false;
@@ -53,7 +53,7 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         [DataMember]
-        public int SessionDuration { get; set; }
+        public TimeSpan SessionDuration { get; set; }
 
         /// <inheritdoc />
         [DataMember]
@@ -61,7 +61,7 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         [DataMember]
-        public List<int> AvailableWarmUpDurations { get; set; }
+        public List<TimeSpan> AvailableWarmUpDurations { get; set; }
 
         /// <inheritdoc />
         [DataMember]
@@ -73,7 +73,7 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         [DataMember]
-        public List<int> AvailableCoolDownDurations { get; set; }
+        public List<TimeSpan> AvailableCoolDownDurations { get; set; }
 
         /// <inheritdoc />
         [DataMember]
@@ -89,7 +89,7 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         [DataMember]
-        public int BreaksDuration { get; set; }
+        public TimeSpan BreaksDuration { get; set; }
 
         /// <inheritdoc />
         [DataMember]

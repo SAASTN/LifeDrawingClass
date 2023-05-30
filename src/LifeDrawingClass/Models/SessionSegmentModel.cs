@@ -29,7 +29,7 @@ namespace LifeDrawingClass.Models
     {
         #region Constructors
 
-        public SessionSegmentModel(SessionSegmentType type, int duration, int count)
+        public SessionSegmentModel(SessionSegmentType type, TimeSpan duration, int count)
         {
             this.Type = type;
             this.Duration = duration;
@@ -44,7 +44,7 @@ namespace LifeDrawingClass.Models
         {
             get
             {
-                TimeSpan duration = TimeSpan.FromMilliseconds(this.Duration);
+                TimeSpan duration = this.Duration;
                 int minutes = (int) duration.TotalMinutes;
                 int seconds = (duration.Seconds / 10) * 10;
                 string result = (minutes > 0 ? $"{minutes}'" : "") + (seconds > 0 ? $"{seconds}\"" : "");
@@ -58,7 +58,7 @@ namespace LifeDrawingClass.Models
         }
 
         public SessionSegmentType Type { get; }
-        public int Duration { get; }
+        public TimeSpan Duration { get; }
         public int Count { get; }
 
         #endregion
@@ -77,8 +77,9 @@ namespace LifeDrawingClass.Models
                 int count = 1;
                 for (int j = i + 1; j < segmentsList.Count; j++)
                 {
-                    if ((segmentsList[i].Type == segmentsList[j].Type) && (segmentsList[i].DurationMilliseconds ==
-                                                                           segmentsList[j].DurationMilliseconds))
+                    if ((segmentsList[i].Type == segmentsList[j].Type) &&
+                        ((int) segmentsList[i].Duration.TotalSeconds ==
+                         (int) segmentsList[j].Duration.TotalSeconds))
                     {
                         count++;
                     }
@@ -88,7 +89,7 @@ namespace LifeDrawingClass.Models
                     }
                 }
 
-                results.Add(new SessionSegmentModel(segmentsList[i].Type, segmentsList[i].DurationMilliseconds, count));
+                results.Add(new SessionSegmentModel(segmentsList[i].Type, segmentsList[i].Duration, count));
                 i += count;
             }
 
@@ -101,11 +102,12 @@ namespace LifeDrawingClass.Models
             foreach (SessionSegmentModel segment in segments)
             {
                 results.AddRange(Enumerable.Range(0, segment.Count).Select(_ => new SessionSegment()
-                    { DurationMilliseconds = segment.Duration, GroupId = -1, Type = segment.Type }));
+                    { Duration = segment.Duration, GroupId = -1, Type = segment.Type }));
             }
 
             return results;
         }
+
         #endregion
 
         #endregion

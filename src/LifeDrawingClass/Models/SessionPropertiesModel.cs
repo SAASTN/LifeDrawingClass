@@ -32,7 +32,7 @@ namespace LifeDrawingClass.Models
         #region Properties & Fields - Non-Public
 
         private SessionSegmentDesignType _designType;
-        private int _sessionDuration;
+        private int _sessionDurationMinutes;
         private int _numberOfLongPoses;
         private bool _addWarmUp;
         private bool _addCoolDown;
@@ -62,13 +62,13 @@ namespace LifeDrawingClass.Models
         }
 
         /// <inheritdoc cref="ISessionProperties.SessionDuration" />
-        public int SessionDuration
+        public int SessionDurationMinutes
         {
-            get => this._sessionDuration;
+            get => this._sessionDurationMinutes;
             set
             {
                 value = (int) (Math.Round(value / 5.0) * 5.0);
-                this.SetProperty(ref this._sessionDuration, value, nameof(this.SessionDuration));
+                this.SetProperty(ref this._sessionDurationMinutes, value, nameof(this.SessionDurationMinutes));
             }
         }
 
@@ -119,7 +119,7 @@ namespace LifeDrawingClass.Models
         public ISessionProperties GetProperties() => new SessionProperties()
         {
             DesignType = this.DesignType,
-            SessionDuration = this.SessionDuration,
+            SessionDuration = TimeSpan.FromMinutes(this.SessionDurationMinutes),
             NumberOfLongPoses = this.NumberOfLongPoses,
             AddWarmUp = this.AddWarmUp,
             AddCoolDown = this.AddCoolDown,
@@ -152,7 +152,7 @@ namespace LifeDrawingClass.Models
         private void Initialize(ISessionProperties properties)
         {
             this._designType = properties.DesignType;
-            this._sessionDuration = properties.SessionDuration;
+            this._sessionDurationMinutes = (int) properties.SessionDuration.TotalMinutes;
             this._numberOfLongPoses = properties.NumberOfLongPoses;
             this._addWarmUp = properties.AddWarmUp;
             this._addCoolDown = properties.AddCoolDown;

@@ -19,6 +19,7 @@
 
 namespace LifeDrawingClass.Business.Interfaces
 {
+    using System;
     using System.Collections.Generic;
     using LifeDrawingClass.Core.Serialization;
 
@@ -27,9 +28,9 @@ namespace LifeDrawingClass.Business.Interfaces
         SessionSegmentDesignType DesignType { get; set; }
 
         /// <summary>
-        ///     Total class length in minutes.
+        ///     Total class length.
         /// </summary>
-        int SessionDuration { get; set; }
+        TimeSpan SessionDuration { get; set; }
 
         /// <summary>
         ///     Specifies whether the session starts with a warm-up.
@@ -39,7 +40,7 @@ namespace LifeDrawingClass.Business.Interfaces
         /// <summary>
         ///     For example when it contains [1, 5, 15], it means that designer can create only 1m, 5m, and 15m warm-up segments.
         /// </summary>
-        List<int> AvailableWarmUpDurations { get; set; }
+        List<TimeSpan> AvailableWarmUpDurations { get; set; }
 
         /// <summary>
         ///     Determines the <b>approximate</b> ratio of the warm-up duration to the total session time.
@@ -54,7 +55,7 @@ namespace LifeDrawingClass.Business.Interfaces
         /// <summary>
         ///     For example when it contains [1, 5, 15], it means that designer can create only 1m, 5m, and 15m cool-down segments.
         /// </summary>
-        List<int> AvailableCoolDownDurations { get; set; }
+        List<TimeSpan> AvailableCoolDownDurations { get; set; }
 
         /// <summary>
         ///     Determines the <b>approximate</b> ratio of the warm-up duration to the total session time.
@@ -68,7 +69,7 @@ namespace LifeDrawingClass.Business.Interfaces
         /// <summary>
         ///     Duration of each of break segments.
         /// </summary>
-        int BreaksDuration { get; set; }
+        TimeSpan BreaksDuration { get; set; }
 
         int NumberOfBreaks { get; set; }
 
@@ -80,6 +81,5 @@ namespace LifeDrawingClass.Business.Interfaces
         bool IsSimplified { get; set; }
 
         string ManualSegmentsDefinition { get; set; }
-
     }
 }

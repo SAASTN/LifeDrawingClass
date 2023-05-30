@@ -19,6 +19,7 @@
 
 namespace LifeDrawingClass.Business.Interfaces
 {
+    using System;
     using LifeDrawingClass.Core.Serialization;
 
     public interface ISessionSegment: ISerializableObject
@@ -30,6 +31,6 @@ namespace LifeDrawingClass.Business.Interfaces
         int GroupId { get; set; }
 
         SessionSegmentType Type { get; set; }
-        int DurationMilliseconds { get; set; }
+        TimeSpan Duration { get; set; }
     }
 }
