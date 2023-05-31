@@ -30,22 +30,36 @@ namespace LifeDrawingClass.Models
     {
         #region Constructors
 
-        public SessionSegmentModel(SessionSegmentType type, TimeSpan duration, int count)
+        public SessionSegmentModel(SessionSegmentType type, TimeSpan duration, int count, bool changeImageAfterBreak)
         {
             this.Type = type;
             this.Duration = duration;
             this.Count = count;
+            this.ChangeImageAfterBreak = changeImageAfterBreak;
         }
 
         #endregion
 
         #region Properties & Fields - Public
 
-        public string DurationText => FormatDuration(this.Duration, this.Count);
+        public string DurationText
+        {
+            get
+            {
+                string text = FormatDuration(this.Duration, this.Count);
+                if ((this.Type == SessionSegmentType.Break) & !this.ChangeImageAfterBreak)
+                {
+                    text = $"◂{text}▸";
+                }
+
+                return text;
+            }
+        }
 
         public SessionSegmentType Type { get; }
         public TimeSpan Duration { get; }
         public int Count { get; }
+        public bool ChangeImageAfterBreak { get; }
 
         #endregion
 
@@ -90,21 +104,25 @@ namespace LifeDrawingClass.Models
             while (i < segmentsList.Count)
             {
                 int count = 1;
-                for (int j = i + 1; j < segmentsList.Count; j++)
+                if (segmentsList[i].Type != SessionSegmentType.Break)
                 {
-                    if ((segmentsList[i].Type == segmentsList[j].Type) &&
-                        ((int) segmentsList[i].Duration.TotalSeconds ==
-                         (int) segmentsList[j].Duration.TotalSeconds))
+                    for (int j = i + 1; j < segmentsList.Count; j++)
                     {
-                        count++;
-                    }
-                    else
-                    {
-                        break;
+                        if ((segmentsList[i].Type == segmentsList[j].Type) &&
+                            ((int) segmentsList[i].Duration.TotalSeconds ==
+                             (int) segmentsList[j].Duration.TotalSeconds))
+                        {
+                            count++;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
 
-                results.Add(new SessionSegmentModel(segmentsList[i].Type, segmentsList[i].Duration, count));
+                results.Add(new SessionSegmentModel(segmentsList[i].Type, segmentsList[i].Duration, count,
+                    segmentsList[i].ChangeImageAfterBreak));
                 i += count;
             }
 
@@ -117,7 +135,10 @@ namespace LifeDrawingClass.Models
             foreach (SessionSegmentModel segment in segments)
             {
                 results.AddRange(Enumerable.Range(0, segment.Count).Select(_ => new SessionSegment()
-                    { Duration = segment.Duration, GroupId = -1, Type = segment.Type }));
+                {
+                    Duration = segment.Duration, Type = segment.Type,
+                    ChangeImageAfterBreak = segment.ChangeImageAfterBreak
+                }));
             }
 
             return results;

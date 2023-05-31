@@ -21,9 +21,11 @@ namespace LifeDrawingClass.Views.Controls
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
     using System.Windows.Media;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Models;
@@ -97,26 +99,49 @@ namespace LifeDrawingClass.Views.Controls
         private void CreateObjects()
         {
             Style borderStyle = (Style) this.FindResource("SegmentStyle");
+            Brush breaksTextColor = (Brush) this.FindResource("BreakSegmentText");
             this.SegmentsStackPanel.Children.Clear();
             Thickness margin = new(3);
 
+            TimeSpan currentTime = TimeSpan.Zero;
+            string toolTipFormat = "h\\:mm" + (this.Segments.Any(s => s.Duration.Seconds >= 10) ? "\\:ss" : "");
             foreach (SessionSegmentModel segment in this.Segments)
             {
+                TimeSpan currentTimeCopy = currentTime; // only to remove compiler nags about the captured variable, see https://stackoverflow.com/a/271447/2093077
+                string toolTipContent = string.Join(Environment.NewLine,
+                    Enumerable.Range(0, segment.Count)
+                        .Select(i =>
+                            ((i * segment.Duration) + currentTimeCopy).ToString(toolTipFormat,
+                                CultureInfo.InvariantCulture)));
+                ToolTip toolTip = new()
+                {
+                    Content = toolTipContent,
+                    Placement = PlacementMode.Bottom,
+                    VerticalOffset = 5
+                };
                 Border border = new()
                 {
                     Style = borderStyle,
                     DataContext = segment,
-                    Background = this.GetSegmentBrush(segment.Type)
+                    Background = this.GetSegmentBrush(segment.Type),
+                    ToolTip = toolTip
                 };
 
                 this.SegmentsStackPanel.Children.Add(border);
-                border.Child = new TextBlock()
+                TextBlock text = new()
                 {
                     Text = segment.DurationText, VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = margin,
                     Opacity = 1
                 };
+                if (segment.Type == SessionSegmentType.Break)
+                {
+                    text.Foreground = breaksTextColor;
+                }
+
+                border.Child = text;
+                currentTime += segment.Count * segment.Duration;
             }
 
             TimeSpan warmUps = TimeSpan.FromTicks(this.Segments.Where(s => s.Type == SessionSegmentType.WarmUp)

@@ -73,6 +73,16 @@ namespace LifeDrawingClass.Business.Interfaces
 
         int NumberOfBreaks { get; set; }
 
+        /// <remarks>
+        ///     The designer tries to put breaks in a way the the whole session be divided to <see cref="NumberOfBreaks" /> + 1
+        ///     parts. But when the calculated time for the break is in the middle of one of the segments, the designer tries to
+        ///     move the break to the closest point between the two segments. however, when this displacement is greater than this
+        ///     value (the <see cref="MaxBreakShift" />),the designer divides the segment into two parts. In the second part
+        ///     of the segment, which starts after the break, the previous image will still be displayed. This is done by
+        ///     setting the <see cref="ISessionSegment.ChangeImageAfterBreak" /> of the break segment to false.
+        /// </remarks>
+        TimeSpan MaxBreakShift { get; set; }
+
         /// <summary>
         ///     If true, the designer only uses <see cref="SessionDuration" />, <see cref="NumberOfLongPoses" />,
         ///     <see cref="AddWarmUp" />, <see cref="AddCoolDown" />, and <see cref="AddBreaks" /> and decides about the rest of

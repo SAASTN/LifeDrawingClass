@@ -28,6 +28,7 @@ namespace LifeDrawingClass.ViewModels
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Models;
+    using MahApps.Metro.Controls;
 
     public class SessionPropertiesViewModel: ObservableObject
     {
@@ -65,6 +66,12 @@ namespace LifeDrawingClass.ViewModels
 
         public ICommand OkCommand => this._ok ??= new RelayCommand(this.Ok);
         public ICommand CancelCommand => this._cancel ??= new RelayCommand(this.Cancel);
+
+        //public  bool DialogResult
+        //{
+        //    get => this._dialogResult;
+        //    set => this.SetProperty(ref this._dialogResult, value, nameof(this.DialogResult));
+        //}
 
         public ObservableCollection<SessionSegmentModel> Segments => this._propertiesModelCopy.Segments;
         public SessionPropertiesModel Result { get; private set; }
@@ -166,18 +173,19 @@ namespace LifeDrawingClass.ViewModels
 
         #region Methods Other
 
-        protected void OnClosingRequest() => this.ClosingRequest?.Invoke(this, EventArgs.Empty);
+        protected void OnClosingRequest(bool canceled) =>
+            this.ClosingRequest?.Invoke(this, new ClosingWindowEventHandlerArgs() { Cancelled = canceled });
 
         private void Ok()
         {
             this.Result = this._propertiesModelCopy;
-            this.OnClosingRequest();
+            this.OnClosingRequest(false);
         }
 
         private void Cancel()
         {
             this.Result = this._propertiesModelOriginal;
-            this.OnClosingRequest();
+            this.OnClosingRequest(true);
         }
 
         #endregion
@@ -186,7 +194,7 @@ namespace LifeDrawingClass.ViewModels
 
         #region Events
 
-        public event EventHandler ClosingRequest;
+        public event EventHandler<ClosingWindowEventHandlerArgs> ClosingRequest;
 
         #endregion
     }

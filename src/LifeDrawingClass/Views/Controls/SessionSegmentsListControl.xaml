@@ -35,7 +35,7 @@
                     Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" />
             </Style>
             <system:Double
-                x:Key="DefaultOpacity">0.6</system:Double>
+                x:Key="DefaultOpacity">0.75</system:Double>
             <system:Double
                 x:Key="TextOpacity">1</system:Double>
             <!-- ReSharper disable Xaml.RedundantResource -->
@@ -53,24 +53,28 @@
                 Opacity="{StaticResource DefaultOpacity}" />
             <SolidColorBrush
                 x:Key="BreakSegmentBrush"
-                Color="Gray"
-                Opacity="{StaticResource DefaultOpacity}" />
+                Color="{DynamicResource MahApps.Colors.ThemeForeground}"
+                Opacity="0.5" />
             <SolidColorBrush
-                x:Key="WarmUpSegmentBrushText"
+                x:Key="WarmUpDurationText"
                 Color="Orange"
                 Opacity="{StaticResource TextOpacity}" />
             <SolidColorBrush
-                x:Key="LongPoseSegmentBrushText"
+                x:Key="LongPoseDurationText"
                 Color="ForestGreen"
                 Opacity="{StaticResource TextOpacity}" />
             <SolidColorBrush
-                x:Key="CoolDownSegmentBrushText"
+                x:Key="CoolDownDurationText"
                 Color="DodgerBlue"
                 Opacity="{StaticResource TextOpacity}" />
             <SolidColorBrush
-                x:Key="BreakSegmentBrushText"
-                Color="Gray"
-                Opacity="{StaticResource TextOpacity}" />
+                x:Key="BreakDurationText"
+                Color="{DynamicResource MahApps.Colors.ThemeForeground}"
+                Opacity="0.6" />
+            <SolidColorBrush
+                x:Key="BreakSegmentText"
+                Color="{DynamicResource MahApps.Colors.ThemeBackground}"
+                Opacity="0.75" />
             <!-- ReSharper restore Xaml.RedundantResource -->
             <Style
                 x:Key="CaptionStyle"
@@ -119,13 +123,13 @@
                     Text="Warm-Up:"
                     Margin="{StaticResource LeftToRightControlMargin}"
                     Style="{StaticResource CaptionStyle}"
-                    Foreground="{StaticResource WarmUpSegmentBrushText}" />
+                    Foreground="{StaticResource WarmUpDurationText}" />
                 <TextBlock
                     Name="WarmUpText"
                     Text="00:00"
                     Margin="{StaticResource LeftToRightControlMargin}"
                     Style="{StaticResource ValueStyle}"
-                    Foreground="{StaticResource WarmUpSegmentBrushText}" />
+                    Foreground="{StaticResource WarmUpDurationText}" />
             </StackPanel>
             <StackPanel
                 Orientation="Horizontal">
@@ -133,13 +137,13 @@
                     Text="Long Poses:"
                     Margin="{StaticResource GapMargin}"
                     Style="{StaticResource CaptionStyle}"
-                    Foreground="{StaticResource LongPoseSegmentBrushText}" />
+                    Foreground="{StaticResource LongPoseDurationText}" />
                 <TextBlock
                     Name="LongPosesText"
                     Text="00:00"
                     Margin="{StaticResource LeftToRightControlMargin}"
                     Style="{StaticResource ValueStyle}"
-                    Foreground="{StaticResource LongPoseSegmentBrushText}" />
+                    Foreground="{StaticResource LongPoseDurationText}" />
             </StackPanel>
             <StackPanel
                 Orientation="Horizontal">
@@ -147,13 +151,13 @@
                     Text="Cool-Down:"
                     Margin="{StaticResource GapMargin}"
                     Style="{StaticResource CaptionStyle}"
-                    Foreground="{StaticResource CoolDownSegmentBrushText}" />
+                    Foreground="{StaticResource CoolDownDurationText}" />
                 <TextBlock
                     Name="CoolDownText"
                     Text="00:00"
                     Margin="{StaticResource LeftToRightControlMargin}"
                     Style="{StaticResource ValueStyle}"
-                    Foreground="{StaticResource CoolDownSegmentBrushText}" />
+                    Foreground="{StaticResource CoolDownDurationText}" />
             </StackPanel>
             <StackPanel
                 Orientation="Horizontal">
@@ -161,13 +165,13 @@
                     Text="Break:"
                     Margin="{StaticResource GapMargin}"
                     Style="{StaticResource CaptionStyle}"
-                    Foreground="{StaticResource BreakSegmentBrushText}" />
+                    Foreground="{StaticResource BreakDurationText}" />
                 <TextBlock
                     Name="BreaksText"
                     Text="00:00"
                     Margin="{StaticResource LeftToRightControlMargin}"
                     Style="{StaticResource ValueStyle}"
-                    Foreground="{StaticResource BreakSegmentBrushText}" />
+                    Foreground="{StaticResource BreakDurationText}" />
             </StackPanel>
             <StackPanel
                 Orientation="Horizontal">

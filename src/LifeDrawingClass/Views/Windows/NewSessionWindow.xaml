@@ -12,7 +12,9 @@
     mc:Ignorable="d"
     Title="New Session"
     Width="1062"
-    Height="400"
+    Height="450"
+    MinHeight="420"
+    MinWidth="500"
     WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid>

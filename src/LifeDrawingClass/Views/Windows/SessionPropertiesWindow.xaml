@@ -13,7 +13,8 @@
     mc:Ignorable="d"
     Title="SessionPropertiesWindow"
     Width="800"
-    SizeToContent="Height">
+    SizeToContent="Height"
+    WindowStartupLocation="CenterScreen">
     <mah:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:EnumBooleanConverter

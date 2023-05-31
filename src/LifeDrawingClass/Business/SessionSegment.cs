@@ -45,10 +45,6 @@ namespace LifeDrawingClass.Business
 
         /// <inheritdoc />
         [DataMember]
-        public int GroupId { get; set; }
-
-        /// <inheritdoc />
-        [DataMember]
         public SessionSegmentType Type { get; set; }
 
         /// <inheritdoc />
@@ -66,6 +62,10 @@ namespace LifeDrawingClass.Business
                 this._duration = value;
             }
         }
+
+        /// <inheritdoc />
+        [DataMember]
+        public bool ChangeImageAfterBreak { get; set; } = true;
 
         #endregion
 

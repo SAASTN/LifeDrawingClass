@@ -24,13 +24,13 @@ namespace LifeDrawingClass.Business.Interfaces
 
     public interface ISessionSegment: ISerializableObject
     {
-        /// <summary>
-        ///     in cases when a break is in middle of a long-pose segment, the long-pose will break into two segments, but both
-        ///     need to show same slide. So, they are grouped together.
-        /// </summary>
-        int GroupId { get; set; }
-
         SessionSegmentType Type { get; set; }
         TimeSpan Duration { get; set; }
+
+        /// <summary>
+        ///     Only can be true when <see cref="Type" /> is equal to <see cref="SessionSegmentType.Break" />. See
+        ///     <see cref="ISessionProperties.MaxBreakShift" /> for more details.
+        /// </summary>
+        bool ChangeImageAfterBreak { get; set; }
     }
 }

@@ -30,7 +30,6 @@ namespace LifeDrawingClass.ViewModels
     using LifeDrawingClass.Core.Image;
     using LifeDrawingClass.Core.Log;
     using LifeDrawingClass.Models;
-    using LifeDrawingClass.Views;
     using LifeDrawingClass.Views.Windows;
     using Microsoft.Win32;
     using Microsoft.WindowsAPICodePack.Dialogs;
@@ -123,10 +122,18 @@ namespace LifeDrawingClass.ViewModels
             {
                 DataContext = viewModel
             };
-            viewModel.ClosingRequest += (_, _) => window.Close();
-            window.ShowDialog();
-            this._sessionPropertiesModel = viewModel.Result;
-            this.SessionModel.MergedSegments = this._sessionPropertiesModel.Segments;
+            viewModel.ClosingRequest += (_, e) =>
+            {
+                window.DialogResult = !e?.Cancelled;
+                window.Close();
+            };
+
+            bool? dialogResult = window.ShowDialog();
+            if (dialogResult ?? false)
+            {
+                this._sessionPropertiesModel = viewModel.Result;
+                this.SessionModel.MergedSegments = this._sessionPropertiesModel.Segments;
+            }
         }
 
         private void AlterTheme()

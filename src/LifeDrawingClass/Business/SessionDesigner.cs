@@ -85,20 +85,7 @@ namespace LifeDrawingClass.Business
 
             if (breaksDuration > TimeSpan.Zero)
             {
-                List<TimeSpan> startTimes = SessionSegment.GetStartTimes(results).Select(s => s).ToList();
-                for (int i = 0; i < sessionProperties.NumberOfBreaks; i++)
-                {
-                    TimeSpan perfectTime = (i + 1) * (nonBreakDuration / (sessionProperties.NumberOfBreaks + 1));
-                    int bestIndex = startTimes
-                        .Select((start, ind) => new { ind, diff = (start - perfectTime).Duration() })
-                        .OrderBy(p => p.ind).First().ind + i;
-                    results.Insert(bestIndex,
-                        new SessionSegment()
-                        {
-                            Duration = sessionProperties.BreaksDuration, GroupId = -1,
-                            Type = SessionSegmentType.Break
-                        });
-                }
+                AddBreaks(sessionProperties, results);
             }
 
             return results;
@@ -111,6 +98,77 @@ namespace LifeDrawingClass.Business
         #region Methods - Non-Public
 
         #region Methods Stat
+
+        private static void AddBreaks(ISessionProperties sessionProperties, List<ISessionSegment> segments)
+        {
+            TimeSpan breaksInterval = sessionProperties.SessionDuration / (sessionProperties.NumberOfBreaks + 1);
+            List<TimeSpan> breakTimes =
+                Enumerable.Range(1, sessionProperties.NumberOfBreaks).Select(i => i * breaksInterval).ToList();
+            breakTimes.ForEach(time => AddBreak(sessionProperties, segments, time));
+        }
+
+        private static void AddBreak(ISessionProperties sessionProperties, List<ISessionSegment> segments,
+            TimeSpan breakTime)
+        {
+            List<TimeSpan> startTimes = SessionSegment.GetStartTimes(segments).Select(s => s).ToList();
+            List<TimeSpan> differences = startTimes.Select(s => s - breakTime).ToList();
+            int bestIndex = differences
+                .Select((diff, ind) => new { ind, diff })
+                .OrderBy(p => p.diff.Duration()).ThenByDescending(p => p.diff).First().ind;
+            if (differences[bestIndex].Duration() <= sessionProperties.MaxBreakShift)
+            {
+                segments.Insert(bestIndex,
+                    new SessionSegment()
+                    {
+                        Duration = sessionProperties.BreaksDuration,
+                        ChangeImageAfterBreak = true,
+                        Type = SessionSegmentType.Break
+                    });
+            }
+            else
+            {
+                int segmentIndex = startTimes.Count(s => s < breakTime) - 1;
+                ISessionSegment segmentToSplit = segments[segmentIndex];
+                segments.RemoveAt(segmentIndex);
+                segments.InsertRange(segmentIndex,
+                    SplitSegment(segmentToSplit, breakTime - startTimes[segmentIndex],
+                        sessionProperties.BreaksDuration));
+            }
+        }
+
+        private static List<ISessionSegment> SplitSegment(ISessionSegment segmentToSplit, TimeSpan breakTime,
+            TimeSpan breakDuration)
+        {
+            // The segment will not break exactly at the designated time, but will be split so that one of the
+            // two parts is a multiple of five minutes. To determine whether the break time should be rounded
+            // up or down, we check which one will make the difference in the duration of the two remaining
+            // parts smaller.
+            breakTime = TimeSpan.FromMinutes(Math.Floor(breakTime.TotalMinutes / 5) * 5);
+            if (breakTime.TotalMinutes < (segmentToSplit.Duration - breakTime).TotalMinutes - 5)
+            {
+                breakTime += TimeSpan.FromMinutes(5);
+            }
+
+            return new List<ISessionSegment>()
+            {
+                new SessionSegment()
+                {
+                    Duration = breakTime,
+                    Type = segmentToSplit.Type
+                },
+                new SessionSegment()
+                {
+                    Duration = breakDuration,
+                    Type = SessionSegmentType.Break,
+                    ChangeImageAfterBreak = false
+                },
+                new SessionSegment()
+                {
+                    Duration = segmentToSplit.Duration - breakTime,
+                    Type = segmentToSplit.Type
+                }
+            };
+        }
 
         private static List<ISessionSegment> SplitSegmentByCount(TimeSpan duration, int numberOfSegments,
             SessionSegmentType segmentType)
@@ -133,7 +191,7 @@ namespace LifeDrawingClass.Business
             {
                 results.AddRange(
                     Enumerable.Range(0, numberOfSegments - 1).Select(_ => new SessionSegment()
-                        { Duration = segmentDuration, GroupId = -1, Type = segmentType }));
+                        { Duration = segmentDuration, Type = segmentType }));
             }
 
             if (numberOfSegments > 0)
@@ -141,7 +199,6 @@ namespace LifeDrawingClass.Business
                 results.Add(new SessionSegment()
                 {
                     Duration = duration - (segmentDuration * (numberOfSegments - 1)),
-                    GroupId = -1,
                     Type = segmentType
                 });
             }
@@ -174,7 +231,7 @@ namespace LifeDrawingClass.Business
                 if (numSegments > 0)
                 {
                     results.AddRange(Enumerable.Range(0, numSegments).Select(_ => new SessionSegment()
-                        { Duration = currentSegmentDuration, GroupId = -1, Type = segmentType }));
+                        { Duration = currentSegmentDuration, Type = segmentType }));
                     totalMinutes -= numSegments * currentSegmentDuration;
                 }
 
@@ -200,6 +257,7 @@ namespace LifeDrawingClass.Business
             List<TimeSpan> availableCoolDownDurations;
             TimeSpan warmUpDuration;
             TimeSpan coolDownDuration;
+            TimeSpan breaksDuration = TimeSpan.FromMinutes(10);
             if (sessionProperties.SessionDuration.TotalMinutes < 60)
             {
                 warmUpDuration = TimeSpan.FromMinutes(10);
@@ -224,12 +282,16 @@ namespace LifeDrawingClass.Business
                     { TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(5), TimeSpan.FromMinutes(10) };
                 warmUpDuration = TimeSpan.FromMinutes(45);
                 coolDownDuration = TimeSpan.FromMinutes(20);
+                if (sessionProperties.SessionDuration.TotalMinutes > 180)
+                {
+                    breaksDuration = TimeSpan.FromMinutes(15);
+                }
             }
 
-            TimeSpan breaksDuration = TimeSpan.FromMinutes(10);
             // a break each 1:30 hours, it is always greater or equal to 1, if the user does not need 
             // any breaks the they must uncheck AddBreaks
-            int numberOfBreaks = (int) Math.Max(1.0, Math.Round(sessionProperties.BreaksDuration.TotalMinutes / 90.0));
+            int numberOfBreaks =
+                (int) Math.Max(1.0, Math.Round(sessionProperties.SessionDuration.TotalMinutes / 90.0) - 1);
 
             TimeSpan nonBreakDuration = sessionProperties.SessionDuration -
                                         (sessionProperties.AddBreaks ? breaksDuration * numberOfBreaks : TimeSpan.Zero);

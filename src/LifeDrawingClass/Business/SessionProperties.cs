@@ -40,6 +40,7 @@ namespace LifeDrawingClass.Business
             this.AddWarmUp = true;
             this.AddCoolDown = false;
             this.AddBreaks = false;
+            this.MaxBreakShift = TimeSpan.FromMinutes(10);
             this.IsSimplified = true;
         }
 
@@ -94,6 +95,10 @@ namespace LifeDrawingClass.Business
         /// <inheritdoc />
         [DataMember]
         public int NumberOfBreaks { get; set; }
+
+        /// <inheritdoc />
+        [DataMember]
+        public TimeSpan MaxBreakShift { get; set; }
 
         /// <inheritdoc />
         [DataMember]
