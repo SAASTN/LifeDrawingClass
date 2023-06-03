@@ -29,7 +29,7 @@ namespace LifeDrawingClass.Views.Windows
     {
         #region Constructors
 
-        public SlideShowWindow(SlideShowSessionModel sessionModel)
+        public SlideShowWindow(SessionModel sessionModel)
         {
             this.InitializeComponent();
             this.DataContext = new SlideShowViewModel(sessionModel);

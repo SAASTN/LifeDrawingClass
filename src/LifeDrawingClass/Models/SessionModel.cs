@@ -26,7 +26,7 @@ namespace LifeDrawingClass.Models
     using LifeDrawingClass.Core.Configuration;
     using LifeDrawingClass.Core.Image;
 
-    public class NewSessionModel: ObservableObject
+    public class SessionModel: ObservableObject
 
     {
         #region Properties & Fields - Non-Public
@@ -38,7 +38,7 @@ namespace LifeDrawingClass.Models
 
         #region Constructors
 
-        public NewSessionModel(ISession session)
+        public SessionModel(ISession session)
         {
             this.Initialize(session);
         }
