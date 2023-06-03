@@ -20,6 +20,7 @@
 namespace LifeDrawingClass.ViewModels
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
     using System.Windows.Input;
@@ -30,7 +31,7 @@ namespace LifeDrawingClass.ViewModels
     using LifeDrawingClass.Models;
     using MahApps.Metro.Controls;
 
-    public class SessionPropertiesViewModel: ObservableObject
+    public class SessionPropertiesViewModel: ObservableObject, IDataErrorInfo
     {
         #region Properties & Fields - Non-Public
 
@@ -57,6 +58,7 @@ namespace LifeDrawingClass.ViewModels
         {
             this._propertiesModelOriginal = propertiesModel;
             this._propertiesModelCopy = new SessionPropertiesModel(propertiesModel.GetProperties());
+            this._propertiesModelCopy.PropertyChanged += this.OnModelPropertyChanged;
             this.Result = this._propertiesModelOriginal;
         }
 
@@ -67,89 +69,88 @@ namespace LifeDrawingClass.ViewModels
         public ICommand OkCommand => this._ok ??= new RelayCommand(this.Ok);
         public ICommand CancelCommand => this._cancel ??= new RelayCommand(this.Cancel);
 
-        //public  bool DialogResult
-        //{
-        //    get => this._dialogResult;
-        //    set => this.SetProperty(ref this._dialogResult, value, nameof(this.DialogResult));
-        //}
+        public IReadOnlyList<SessionSegmentModel> MergedSegments => this._propertiesModelCopy.MergedSegments;
 
-        public ObservableCollection<SessionSegmentModel> Segments => this._propertiesModelCopy.Segments;
+        public ObservableCollection<SessionDefinitionParser.ParserMessageItem> ParsingMessages =>
+            this._propertiesModelCopy.ParsingMessages;
+
+        public bool HasParsingIssue => this._propertiesModelCopy.HasParsingIssue;
         public SessionPropertiesModel Result { get; private set; }
 
         /// <inheritdoc cref="ISessionProperties.DesignType" />
         public SessionSegmentDesignType DesignType
         {
             get => this._propertiesModelCopy.DesignType;
-            set
-            {
-                this._propertiesModelCopy.DesignType = value;
-                this.OnPropertyChanged(nameof(this.DesignType));
-            }
+            set => this._propertiesModelCopy.DesignType = value;
         }
 
         /// <inheritdoc cref="ISessionProperties.SessionDuration" />
         public int SessionDurationMinutes
         {
             get => this._propertiesModelCopy.SessionDurationMinutes;
-            set
-            {
-                this._propertiesModelCopy.SessionDurationMinutes = value;
-                this.OnPropertyChanged(nameof(this.SessionDurationMinutes));
-            }
+            set => this._propertiesModelCopy.SessionDurationMinutes = value;
         }
 
         /// <inheritdoc cref="ISessionProperties.NumberOfLongPoses" />
         public int NumberOfLongPoses
         {
             get => this._propertiesModelCopy.NumberOfLongPoses;
-            set
-            {
-                this._propertiesModelCopy.NumberOfLongPoses = value;
-                this.OnPropertyChanged(nameof(this.NumberOfLongPoses));
-            }
+            set => this._propertiesModelCopy.NumberOfLongPoses = value;
         }
 
         /// <inheritdoc cref="ISessionProperties.AddWarmUp" />
         public bool AddWarmUp
         {
             get => this._propertiesModelCopy.AddWarmUp;
-            set
-            {
-                this._propertiesModelCopy.AddWarmUp = value;
-                this.OnPropertyChanged(nameof(this.AddWarmUp));
-            }
+            set => this._propertiesModelCopy.AddWarmUp = value;
         }
 
         /// <inheritdoc cref="ISessionProperties.AddCoolDown" />
         public bool AddCoolDown
         {
             get => this._propertiesModelCopy.AddCoolDown;
-            set
-            {
-                this._propertiesModelCopy.AddCoolDown = value;
-                this.OnPropertyChanged(nameof(this.AddCoolDown));
-            }
+            set => this._propertiesModelCopy.AddCoolDown = value;
         }
 
         /// <inheritdoc cref="ISessionProperties.AddBreaks" />
         public bool AddBreaks
         {
             get => this._propertiesModelCopy.AddBreaks;
-            set
-            {
-                this._propertiesModelCopy.AddBreaks = value;
-                this.OnPropertyChanged(nameof(this.AddBreaks));
-            }
+            set => this._propertiesModelCopy.AddBreaks = value;
         }
 
         /// <inheritdoc cref="ISessionProperties.IsSimplified" />
+        // ReSharper disable once UnusedMember.Global
         public bool IsSimplified
         {
             get => this._propertiesModelCopy.IsSimplified;
-            set
+            set => this._propertiesModelCopy.IsSimplified = value;
+        }
+
+        /// <inheritdoc cref="ISessionProperties.ManualSegmentsDefinition" />
+        public string ManualSegmentsDefinition
+        {
+            get => this._propertiesModelCopy.ManualSegmentsDefinition;
+            set => this._propertiesModelCopy.ManualSegmentsDefinition = value;
+        }
+
+        #endregion
+
+        #region Properties Impl - Public
+
+        /// <inheritdoc />
+        public string Error => string.Empty;
+
+        public string this[string columnName]
+        {
+            get
             {
-                this._propertiesModelCopy.IsSimplified = value;
-                this.OnPropertyChanged(nameof(this.IsSimplified));
+                if ((columnName == nameof(this.ManualSegmentsDefinition)) && this.HasParsingIssue)
+                {
+                    return "There are some issues, check the messages below.";
+                }
+
+                return null;
             }
         }
 
@@ -157,21 +158,10 @@ namespace LifeDrawingClass.ViewModels
 
         #region Methods - Non-Public
 
-        #region Methods Impl
-
-        /// <inheritdoc />
-        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            base.OnPropertyChanged(e);
-            if ((e.PropertyName ?? "") != nameof(this.Segments))
-            {
-                this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.Segments)));
-            }
-        }
-
-        #endregion
-
         #region Methods Other
+
+        private void OnModelPropertyChanged(object _, PropertyChangedEventArgs e) =>
+            this.OnPropertyChanged(e.PropertyName);
 
         protected void OnClosingRequest(bool canceled) =>
             this.ClosingRequest?.Invoke(this, new ClosingWindowEventHandlerArgs() { Cancelled = canceled });

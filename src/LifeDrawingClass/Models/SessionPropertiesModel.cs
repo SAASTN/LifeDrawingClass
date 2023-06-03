@@ -20,8 +20,10 @@
 namespace LifeDrawingClass.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Linq;
     using CommunityToolkit.Mvvm.ComponentModel;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
@@ -38,6 +40,8 @@ namespace LifeDrawingClass.Models
         private bool _addCoolDown;
         private bool _addBreaks;
         private bool _isSimplified;
+        private string _manualSegmentsDefinition;
+        private bool _hasParsingIssue;
 
         #endregion
 
@@ -52,14 +56,40 @@ namespace LifeDrawingClass.Models
 
         #region Properties & Fields - Public
 
-        public ObservableCollection<SessionSegmentModel> Segments =>
-            new(SessionSegmentModel.MergeSegment(SessionProperties.GetSegments(this.GetProperties())));
+        public IReadOnlyList<SessionSegmentModel> MergedSegments
+        {
+            get
+            {
+                List<SessionSegmentModel> segments = new(SessionSegmentModel.MergeSegment(
+                    SessionProperties.GetSegments(this.GetProperties(),
+                        out List<SessionDefinitionParser.ParserMessageItem> parsingMessages)));
+                this.SetParsingMessages(parsingMessages);
+                return segments;
+            }
+        }
+
+        public ObservableCollection<SessionDefinitionParser.ParserMessageItem> ParsingMessages { get; } = new();
 
         public SessionSegmentDesignType DesignType
         {
             get => this._designType;
-            set => this.SetProperty(ref this._designType, value, nameof(this.DesignType));
+            set
+            {
+                string manualSegmentsDefinition = this._manualSegmentsDefinition;
+                if ((this._designType == SessionSegmentDesignType.Automatic) &&
+                    (value == SessionSegmentDesignType.Manual))
+                {
+                    manualSegmentsDefinition = ConvertAutomaticToManual(this.MergedSegments);
+                }
+
+                this.SetProperty(ref this._designType, value, nameof(this.DesignType));
+                if (manualSegmentsDefinition != this._manualSegmentsDefinition)
+                {
+                    this.ManualSegmentsDefinition = manualSegmentsDefinition;
+                }
+            }
         }
+
 
         /// <inheritdoc cref="ISessionProperties.SessionDuration" />
         public int SessionDurationMinutes
@@ -107,6 +137,20 @@ namespace LifeDrawingClass.Models
             set => this.SetProperty(ref this._isSimplified, value, nameof(this.IsSimplified));
         }
 
+        /// <inheritdoc cref="ISessionProperties.ManualSegmentsDefinition" />
+        public string ManualSegmentsDefinition
+        {
+            get => this._manualSegmentsDefinition;
+            set => this.SetProperty(ref this._manualSegmentsDefinition, value.ToUpperInvariant().Replace('X', 'x'),
+                nameof(this.ManualSegmentsDefinition));
+        }
+
+        public bool HasParsingIssue
+        {
+            get => this._hasParsingIssue;
+            set => this.SetProperty(ref this._hasParsingIssue, value, nameof(this.HasParsingIssue));
+        }
+
         #endregion
 
         #region Methods - Public
@@ -124,7 +168,8 @@ namespace LifeDrawingClass.Models
             AddWarmUp = this.AddWarmUp,
             AddCoolDown = this.AddCoolDown,
             AddBreaks = this.AddBreaks,
-            IsSimplified = true
+            IsSimplified = true,
+            ManualSegmentsDefinition = this.ManualSegmentsDefinition
         };
 
         #endregion
@@ -133,21 +178,51 @@ namespace LifeDrawingClass.Models
 
         #region Methods - Non-Public
 
+        #region Methods Stat
+
+        private static string ConvertAutomaticToManual(IEnumerable<SessionSegmentModel> mergedSegments) =>
+            SessionDefinitionParser.GetDefinitionTextAutomaticSession(mergedSegments);
+
+        #endregion
+
         #region Methods Impl
 
         /// <inheritdoc />
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            if ((e.PropertyName ?? "") != nameof(this.Segments))
+            if (!string.IsNullOrEmpty(e.PropertyName) && (e.PropertyName != nameof(this.MergedSegments)) &&
+                (e.PropertyName != nameof(this.ParsingMessages)) && (e.PropertyName != nameof(this.HasParsingIssue)))
             {
-                this.OnPropertyChanged(nameof(this.Segments));
+                this.OnPropertyChanged(new PropertyChangedEventArgs(nameof(this.MergedSegments)));
             }
         }
 
         #endregion
 
         #region Methods Other
+
+        private void SetParsingMessages(List<SessionDefinitionParser.ParserMessageItem> parsingMessages)
+        {
+            this.ParsingMessages.Clear();
+            if (this.DesignType != SessionSegmentDesignType.Manual)
+            {
+                this._hasParsingIssue = false;
+            }
+            else
+            {
+                parsingMessages?.ForEach(m => this.ParsingMessages.Add(m));
+                this._hasParsingIssue = parsingMessages?.Any() ?? false;
+                if (!this._hasParsingIssue)
+                {
+                    this.ParsingMessages.Add(
+                        new SessionDefinitionParser.ParserMessageItem("", -1, "Everything looks fine."));
+                }
+            }
+
+            this.OnPropertyChanged(nameof(this.ParsingMessages));
+            this.OnPropertyChanged(nameof(this.HasParsingIssue));
+        }
 
         private void Initialize(ISessionProperties properties)
         {

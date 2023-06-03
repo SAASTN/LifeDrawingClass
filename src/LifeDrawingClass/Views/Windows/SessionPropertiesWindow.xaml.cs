@@ -19,6 +19,9 @@
 
 namespace LifeDrawingClass.Views.Windows
 {
+    using System.Windows.Controls;
+    using LifeDrawingClass.Business;
+
     /// <summary>
     ///     Interaction logic for SessionPropertiesWindow.xaml
     /// </summary>
@@ -30,6 +33,46 @@ namespace LifeDrawingClass.Views.Windows
         {
             this.InitializeComponent();
         }
+
+        #endregion
+
+        #region Methods - Non-Public
+
+        #region Methods Other
+
+        private void ListBox_LostFocus(object sender, System.Windows.RoutedEventArgs e) =>
+            ((ListBox) sender).SelectedIndex = -1;
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((ListBox) sender)?.SelectedItem != null)
+            {
+                SessionDefinitionParser.ParserMessageItem selectedMessage =
+                    (SessionDefinitionParser.ParserMessageItem) ((ListBox) sender).SelectedItem;
+                string text = this.ManualDefinitionTextBox.Text;
+                int selStart = 0;
+                for (int i = 0; i < selectedMessage.SectionIndex; i++)
+                {
+                    selStart++;
+                    selStart = text.IndexOf(',', selStart);
+                }
+
+                this.ManualDefinitionTextBox.SelectionStart = selStart + 1;
+                this.ManualDefinitionTextBox.SelectionLength = selectedMessage.Section.Length;
+                this.ManualDefinitionTextBox.Focus();
+            }
+        }
+
+        private void ManualDefinitionTextBox_PreviewTextInput(object sender,
+            System.Windows.Input.TextCompositionEventArgs e)
+        {
+            if (!SessionDefinitionParser.AreValidChars(e.Text))
+            {
+                e.Handled = true;
+            }
+        }
+
+        #endregion
 
         #endregion
     }

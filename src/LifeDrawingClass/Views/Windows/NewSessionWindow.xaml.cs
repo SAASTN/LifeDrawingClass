@@ -20,6 +20,7 @@
 namespace LifeDrawingClass.Views.Windows
 {
     using System;
+    using System.Windows;
     using LifeDrawingClass.Business;
     using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Configuration;
@@ -31,12 +32,15 @@ namespace LifeDrawingClass.Views.Windows
     /// <summary>
     ///     Interaction logic for NewSessionWindow.xaml
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public partial class NewSessionWindow
     {
         #region Constructors
 
         public NewSessionWindow()
         {
+            Application.Current.Resources["MahApps.Font.Size.Content"] = 16.5d;
+            Application.Current.Resources["MahApps.Font.Size.Button"] = 16.5d;
             this.InitializeComponent();
             this.DataContext = new NewSessionViewModel(GetLastSessionModel(), GetLastSessionPropertiesModel());
         }

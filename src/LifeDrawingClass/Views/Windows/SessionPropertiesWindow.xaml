@@ -13,8 +13,8 @@
     mc:Ignorable="d"
     Title="SessionPropertiesWindow"
     Width="800"
-    SizeToContent="Height"
-    WindowStartupLocation="CenterScreen">
+    WindowStartupLocation="CenterScreen"
+    SizeToContent="Height">
     <mah:MetroWindow.Resources>
         <ResourceDictionary>
             <converters:EnumBooleanConverter
@@ -29,7 +29,9 @@
             <converters:ValueConverterGroup
                 x:Key="EnumDoubleConverter">
                 <converters:EnumBooleanConverter />
-                <converters:BooleanDoubleConverter />
+                <converters:BooleanIffConverter
+                    TrueValue="2"
+                    FalseValue="0" />
             </converters:ValueConverterGroup>
             <Style
                 x:Key="HeaderRadioButtonStyle"
@@ -42,6 +44,16 @@
                     Property="FontSize"
                     Value="{StaticResource CommonFontSize}" />
             </Style>
+            <SolidColorBrush
+                x:Key="Error"
+                Color="Red" />
+            <SolidColorBrush
+                x:Key="Ok"
+                Color="Green" />
+            <converters:BooleanIffConverter
+                x:Key="BoolToBrush"
+                TrueValue="{StaticResource Error}"
+                FalseValue="{StaticResource Ok}" />
         </ResourceDictionary>
     </mah:MetroWindow.Resources>
 
@@ -52,139 +64,189 @@
                 TargetType="{x:Type Slider}">
             </Style>
         </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="*" />
+            <RowDefinition
+                Height="Auto" />
+        </Grid.RowDefinitions>
 
-
-        <StackPanel>
-
-            <GroupBox
-                Margin="{StaticResource TopToBottomControlMargin}"
-                Grid.IsSharedSizeScope="True"
-                BorderThickness="{Binding DesignType, Converter={StaticResource EnumDoubleConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Automatic}}">
-                <GroupBox.Header>
-                    <RadioButton
-                        Content="Automatic Segments Generation"
-                        Style="{StaticResource HeaderRadioButtonStyle}"
-                        IsChecked="{Binding DesignType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Automatic}}" />
-                </GroupBox.Header>
-                <StackPanel
-                    Visibility="{Binding DesignType, Converter={StaticResource EnumVisibilityConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Automatic}}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition
-                                SharedSizeGroup="CaptionColumn"
-                                Width="Auto" />
-                            <ColumnDefinition
-                                Width="*" />
-                            <ColumnDefinition
-                                Width="60"
-                                SharedSizeGroup="ValueColumn" />
-                        </Grid.ColumnDefinitions>
+        <GroupBox
+            Margin="{StaticResource TopToBottomControlMargin}"
+            Grid.IsSharedSizeScope="True"
+            BorderThickness="{Binding DesignType, Converter={StaticResource EnumDoubleConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Automatic}}">
+            <GroupBox.Header>
+                <RadioButton
+                    Content="Automatic Segments Generation"
+                    Style="{StaticResource HeaderRadioButtonStyle}"
+                    IsChecked="{Binding DesignType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Automatic}}" />
+            </GroupBox.Header>
+            <StackPanel
+                Visibility="{Binding DesignType, Converter={StaticResource EnumVisibilityConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Automatic}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            SharedSizeGroup="CaptionColumn"
+                            Width="Auto" />
+                        <ColumnDefinition
+                            Width="*" />
+                        <ColumnDefinition
+                            Width="60"
+                            SharedSizeGroup="ValueColumn" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="Class Duration" />
+                    <Slider
+                        Grid.Column="1"
+                        Margin="{StaticResource LeftToRightControlMargin}"
+                        Minimum="30"
+                        Maximum="360"
+                        SmallChange="5"
+                        TickPlacement="TopLeft"
+                        Ticks="60 90 120 180 240 300"
+                        AutoToolTipPlacement="None"
+                        LargeChange="15"
+                        Value="{Binding SessionDurationMinutes}">
+                    </Slider>
+                    <Border
+                        Grid.Column="2"
+                        Focusable="False"
+                        BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}"
+                        BorderThickness="1"
+                        Margin="{StaticResource RightControlMargin}">
                         <TextBlock
-                            Grid.Column="0"
-                            Text="Class Duration" />
-                        <Slider
-                            Grid.Column="1"
-                            Margin="{StaticResource LeftToRightControlMargin}"
-                            Minimum="30"
-                            Maximum="360"
-                            SmallChange="5"
-                            TickPlacement="TopLeft"
-                            Ticks="60 90 120 180 240 300"
-                            AutoToolTipPlacement="None"
-                            LargeChange="15"
-                            Value="{Binding SessionDurationMinutes}">
-                        </Slider>
-                        <Border
-                            Grid.Column="2"
-                            Focusable="False"
-                            BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}"
-                            BorderThickness="1"
-                            Margin="{StaticResource RightControlMargin}">
-                            <TextBlock
-                                HorizontalAlignment="left"
-                                VerticalAlignment="Center"
-                                TextAlignment="Center"
-                                Margin="3"
-                                Text="{Binding SessionDurationMinutes, Converter={StaticResource DurationConverter}}" />
-                        </Border>
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition
-                                SharedSizeGroup="CaptionColumn"
-                                Width="164*" />
-                            <ColumnDefinition
-                                Width="221*" />
-                            <ColumnDefinition
-                                Width="337*" />
-                            <ColumnDefinition
-                                SharedSizeGroup="ValueColumn"
-                                Width="60*" />
-                        </Grid.ColumnDefinitions>
+                            HorizontalAlignment="left"
+                            VerticalAlignment="Center"
+                            TextAlignment="Center"
+                            Margin="3"
+                            Text="{Binding SessionDurationMinutes, Converter={StaticResource DurationConverter}}" />
+                    </Border>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            SharedSizeGroup="CaptionColumn"
+                            Width="164*" />
+                        <ColumnDefinition
+                            Width="221*" />
+                        <ColumnDefinition
+                            Width="337*" />
+                        <ColumnDefinition
+                            SharedSizeGroup="ValueColumn"
+                            Width="60*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Text="Number of Long Poses:" />
+                    <Slider
+                        Grid.Column="1"
+                        Margin="5,5,0,5"
+                        Minimum="1"
+                        Maximum="10"
+                        SmallChange="1"
+                        TickPlacement="TopLeft"
+                        AutoToolTipPlacement="None"
+                        LargeChange="2"
+                        Value="{Binding NumberOfLongPoses}"
+                        Grid.ColumnSpan="2">
+                    </Slider>
+                    <Border
+                        Grid.Column="3"
+                        Focusable="False"
+                        BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}"
+                        BorderThickness="1"
+                        Margin="5,5,5,0">
                         <TextBlock
-                            Grid.Column="0"
-                            Text="Number of Long Poses:" />
-                        <Slider
-                            Grid.Column="1"
-                            Margin="5,5,0,5"
-                            Minimum="1"
-                            Maximum="10"
-                            SmallChange="1"
-                            TickPlacement="TopLeft"
-                            AutoToolTipPlacement="None"
-                            LargeChange="2"
-                            Value="{Binding NumberOfLongPoses}"
-                            Grid.ColumnSpan="2">
-                        </Slider>
-                        <Border
-                            Grid.Column="3"
-                            Focusable="False"
-                            BorderBrush="{DynamicResource MahApps.Brushes.Button.Border}"
-                            BorderThickness="1"
-                            Margin="5,5,5,0">
-                            <TextBlock
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                TextAlignment="Center"
-                                Margin="3"
-                                Text="{Binding NumberOfLongPoses}" />
-                        </Border>
-                    </Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition
-                                Width="*" />
-                            <ColumnDefinition
-                                Width="*" />
-                            <ColumnDefinition
-                                Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <mah:ToggleSwitch
-                            Content="Add Warm-Up"
-                            IsOn="{Binding AddWarmUp}" />
-                        <mah:ToggleSwitch
-                            Grid.Column="1"
-                            Content="Add Cool-Down"
-                            IsOn="{Binding AddCoolDown}" />
-                        <mah:ToggleSwitch
-                            Grid.Column="2"
-                            Content="Add Break(s)"
-                            IsOn="{Binding AddBreaks}" />
-                    </Grid>
-                </StackPanel>
-            </GroupBox>
-            <GroupBox
-                Margin="{StaticResource TopToBottomControlMargin}"
-                BorderThickness="{Binding DesignType, Converter={StaticResource EnumDoubleConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Manual}}">
-                <GroupBox.Header>
-                    <RadioButton
-                        Content="Manual Segments Definition"
-                        Style="{StaticResource HeaderRadioButtonStyle}"
-                        IsChecked="{Binding DesignType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Manual}}" />
-                </GroupBox.Header>
-            </GroupBox>
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            TextAlignment="Center"
+                            Margin="3"
+                            Text="{Binding NumberOfLongPoses}" />
+                    </Border>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="*" />
+                        <ColumnDefinition
+                            Width="*" />
+                        <ColumnDefinition
+                            Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <mah:ToggleSwitch
+                        Content="Add Warm-Up"
+                        IsOn="{Binding AddWarmUp}" />
+                    <mah:ToggleSwitch
+                        Grid.Column="1"
+                        Content="Add Cool-Down"
+                        IsOn="{Binding AddCoolDown}" />
+                    <mah:ToggleSwitch
+                        Grid.Column="2"
+                        Content="Add Break(s)"
+                        IsOn="{Binding AddBreaks}" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox
+            Grid.Row="1"
+            Margin="{StaticResource TopToBottomControlMargin}"
+            BorderThickness="{Binding DesignType, Converter={StaticResource EnumDoubleConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Manual}}">
+            <GroupBox.Header>
+                <RadioButton
+                    Content="Manual Segments Definition"
+                    Style="{StaticResource HeaderRadioButtonStyle}"
+                    IsChecked="{Binding DesignType, Converter={StaticResource EnumBooleanConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Manual}}" />
+            </GroupBox.Header>
+            <DockPanel
+                Visibility="{Binding DesignType, Converter={StaticResource EnumVisibilityConverter}, ConverterParameter={x:Static business:SessionSegmentDesignType.Manual}}">
+                <TextBlock
+                    DockPanel.Dock="Top"
+                    Text="Session definition:"
+                    Margin="{StaticResource TopToBottomControlMargin}" />
+                <TextBox
+                    DockPanel.Dock="Top"
+                    x:Name="ManualDefinitionTextBox"
+                    Margin="{StaticResource TopToBottomControlMargin}"
+                    mah:TextBoxHelper.Watermark="Try something like 5x2W,2x25"
+                    Text="{Binding ManualSegmentsDefinition, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, NotifyOnValidationError=True}"
+                    PreviewTextInput="ManualDefinitionTextBox_PreviewTextInput" />
+                <TextBlock
+                    DockPanel.Dock="Top"
+                    Text="Error(s):"
+                    Margin="{StaticResource TopToBottomControlMargin}" />
+                <ListBox
+                    DockPanel.Dock="Bottom"
+                    BorderThickness="2"
+                    BorderBrush="{Binding HasParsingIssue, Converter={StaticResource BoolToBrush}}"
+                    Margin="{StaticResource TopToBottomControlMargin}"
+                    IsEnabled="{Binding HasParsingIssue}"
+                    ItemsSource="{Binding ParsingMessages}"
+                    MinHeight="50"
+                    VerticalAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTextSearchEnabled="False"
+                    LostFocus="ListBox_LostFocus"
+                    SelectionChanged="ListBox_SelectionChanged">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel
+                                Orientation="Vertical">
+                                <TextBlock
+                                    Text="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </GroupBox>
+        <StackPanel
+            Grid.Row="2"
+            VerticalAlignment="Bottom">
             <controls:SessionSegmentsListControl
-                Segments="{Binding Segments}" />
+                Segments="{Binding MergedSegments}" />
             <StackPanel
                 Orientation="Horizontal"
                 FlowDirection="RightToLeft">
@@ -202,6 +264,5 @@
             </StackPanel>
 
         </StackPanel>
-
     </Grid>
 </mah:MetroWindow>

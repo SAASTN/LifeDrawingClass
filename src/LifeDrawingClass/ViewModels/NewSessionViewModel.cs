@@ -132,7 +132,7 @@ namespace LifeDrawingClass.ViewModels
             if (dialogResult ?? false)
             {
                 this._sessionPropertiesModel = viewModel.Result;
-                this.SessionModel.MergedSegments = this._sessionPropertiesModel.Segments;
+                this.SessionModel.MergedSegments = this._sessionPropertiesModel.MergedSegments;
             }
         }
 

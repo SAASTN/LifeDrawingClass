@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  SessionDesigner.cs
+//  SessionSegmentsDesigner.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 

@@ -20,7 +20,7 @@
                     Source="Views/Resources/Graphics.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <system:Double
-                x:Key="CommonFontSize">16</system:Double>
+                x:Key="CommonFontSize">16.5</system:Double>
             <system:Double
                 x:Key="CommonMarginSize">5</system:Double>
 
@@ -55,9 +55,6 @@
                 BasedOn="{StaticResource MahApps.Styles.Button}"
                 TargetType="{x:Type Button}">
                 <Setter
-                    Property="FontSize"
-                    Value="{StaticResource CommonFontSize}" />
-                <Setter
                     Property="FontWeight"
                     Value="Normal" />
                 <Setter
@@ -68,34 +65,11 @@
                 BasedOn="{StaticResource MahApps.Styles.RadioButton}"
                 TargetType="{x:Type RadioButton}">
                 <Setter
-                    Property="FontSize"
-                    Value="{StaticResource CommonFontSize}" />
-                <Setter
                     Property="FontWeight"
                     Value="Normal" />
                 <Setter
                     Property="mah:ControlsHelper.ContentCharacterCasing"
                     Value="Normal" />
-            </Style>
-            <Style
-                BasedOn="{StaticResource MahApps.Styles.TextBox}"
-                TargetType="{x:Type TextBox}">
-                <Setter
-                    Property="FontSize"
-                    Value="{StaticResource CommonFontSize}" />
-            </Style>
-            <Style
-                BasedOn="{StaticResource MahApps.Styles.TextBlock}"
-                TargetType="{x:Type TextBlock}">
-                <Setter
-                    Property="FontSize"
-                    Value="{StaticResource CommonFontSize}" />
-            </Style>
-            <Style
-                TargetType="mah:ToggleSwitch">
-                <Setter
-                    Property="FontSize"
-                    Value="{StaticResource CommonFontSize}" />
             </Style>
         </ResourceDictionary>
 

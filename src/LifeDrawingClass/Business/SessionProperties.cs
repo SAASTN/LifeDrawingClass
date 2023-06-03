@@ -113,13 +113,18 @@ namespace LifeDrawingClass.Business
 
         #region Methods Stat
 
-        public static List<ISessionSegment> GetSegments(ISessionProperties sessionProperties) =>
-            sessionProperties.DesignType switch
+        public static List<ISessionSegment> GetSegments(ISessionProperties sessionProperties,
+            out List<SessionDefinitionParser.ParserMessageItem> parsingMessages)
+        {
+            parsingMessages = null;
+            return sessionProperties.DesignType switch
             {
                 SessionSegmentDesignType.Automatic => SessionSegmentsDesigner.DesignSessionSegments(sessionProperties),
-                SessionSegmentDesignType.Manual => throw new NotImplementedException(),
+                SessionSegmentDesignType.Manual => SessionDefinitionParser.Parse(
+                    sessionProperties.ManualSegmentsDefinition, out parsingMessages),
                 _ => throw new InvalidEnumArgumentException("Unknown design type.")
             };
+        }
 
         #endregion
 
