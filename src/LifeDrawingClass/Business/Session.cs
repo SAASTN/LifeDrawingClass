@@ -70,7 +70,6 @@ namespace LifeDrawingClass.Business
             set => this._segments = value.Cast<SessionSegment>().ToList();
         }
 
-        [DataMember] public int Interval { get; set; }
 
         /// <inheritdoc />
         [DataMember]

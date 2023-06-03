@@ -28,13 +28,6 @@
             </Grid.RowDefinitions>
             <StackPanel>
                 <TextBlock
-                    Text="Interval (in milliseconds):"
-                    Margin="{StaticResource TopToBottomControlMargin}"
-                    Style="{DynamicResource DefaultTextBlockStyle}" />
-                <TextBox
-                    Text="{Binding SessionModel.Interval}"
-                    Margin="{StaticResource TopToBottomControlMargin}" />
-                <TextBlock
                     Text="Session segments:"
                     Margin="{StaticResource TopToBottomControlMargin}" />
                 <Grid>

@@ -27,6 +27,5 @@ namespace LifeDrawingClass.Business.Interfaces
         IReadOnlyList<string> ImagePaths { get; }
         IReadOnlyList<ISessionSegment> Segments { get; set; }
         int CurrentSegmentIndex { get; }
-        int Interval { get; set; }
     }
 }

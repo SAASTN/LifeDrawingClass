@@ -33,7 +33,6 @@ namespace LifeDrawingClass.Models
 
         private ImageList _imageList;
         private IReadOnlyList<SessionSegmentModel> _mergedSegments;
-        private int _interval;
 
         #endregion
 
@@ -60,11 +59,6 @@ namespace LifeDrawingClass.Models
                 nameof(this.MergedSegments));
         }
 
-        public int Interval
-        {
-            get => this._interval;
-            set => this.SetProperty(ref this._interval, value, nameof(this.Interval));
-        }
 
         #endregion
 
@@ -94,7 +88,6 @@ namespace LifeDrawingClass.Models
         {
             this._imageList = new ImageList(session.ImagePaths);
             this._mergedSegments = SessionSegmentModel.MergeSegment(session.Segments);
-            this._interval = session.Interval;
             this.OnPropertyChanged();
         }
 
@@ -102,8 +95,7 @@ namespace LifeDrawingClass.Models
         {
             ImagePaths = this.ImagePaths,
             Segments = SessionSegmentModel.ExpandSegments(this.MergedSegments),
-            CurrentSegmentIndex = -1,
-            Interval = this.Interval
+            CurrentSegmentIndex = -1
         };
 
         #endregion

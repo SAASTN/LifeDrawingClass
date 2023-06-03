@@ -36,8 +36,6 @@ namespace LifeDrawingClass.Models
 
         #region Properties & Fields - Public
 
-        public int Interval { get; private set; }
-
         public IReadOnlyList<string> ImagePaths { get; private set; }
 
         #endregion
@@ -48,7 +46,6 @@ namespace LifeDrawingClass.Models
 
         private void Initialize(ISession session)
         {
-            this.Interval = session.Interval;
             this.ImagePaths = session.ImagePaths;
             this.OnPropertyChanged();
         }

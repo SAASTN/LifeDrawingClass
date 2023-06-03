@@ -41,7 +41,7 @@ namespace LifeDrawingClass.ViewModels
             this._sessionModel = sessionModel;
             DispatcherTimer timer = new()
             {
-                Interval = new TimeSpan(0, 0, 0, 0, this._sessionModel.Interval)
+                Interval = new TimeSpan(0, 0, 0, 0, 200)
             };
             timer.Tick += this.Timer_Tick;
             timer.Start();
