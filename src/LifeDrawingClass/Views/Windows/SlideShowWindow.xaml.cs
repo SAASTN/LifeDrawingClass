@@ -19,8 +19,9 @@
 
 namespace LifeDrawingClass.Views.Windows
 {
-    using LifeDrawingClass.Models;
+    using System;
     using LifeDrawingClass.ViewModels;
+    using SkiaSharp.Views.Desktop;
 
     /// <summary>
     ///     Interaction logic for SlideShowWindow.xaml
@@ -29,11 +30,31 @@ namespace LifeDrawingClass.Views.Windows
     {
         #region Constructors
 
-        public SlideShowWindow(SessionModel sessionModel)
+        public SlideShowWindow()
         {
             this.InitializeComponent();
-            this.DataContext = new SlideShowViewModel(sessionModel);
         }
+
+        #endregion
+
+        #region Methods - Public
+
+        #region Methods Other
+
+        public void OnRefreshRequested(object sender, EventArgs e) => this.Canvas.InvalidateVisual();
+
+        #endregion
+
+        #endregion
+
+        #region Methods - Non-Public
+
+        #region Methods Other
+
+        private void OnPaintCanvas(object sender, SKPaintSurfaceEventArgs e) =>
+            (this.DataContext as SlideShowViewModel)?.OnPaintImage(e.Surface.Canvas, e.Info.Width, e.Info.Height);
+
+        #endregion
 
         #endregion
     }

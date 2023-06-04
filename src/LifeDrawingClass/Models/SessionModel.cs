@@ -47,8 +47,6 @@ namespace LifeDrawingClass.Models
 
         #region Properties & Fields - Public
 
-        public int CurrentSegmentIndex;
-
         public IReadOnlyList<string> ImagePaths => this._imageList.AsList();
 
         public IReadOnlyList<SessionSegmentModel> MergedSegments
@@ -58,7 +56,6 @@ namespace LifeDrawingClass.Models
                 SessionSegmentModel.MergeSegment(SessionSegmentModel.ExpandSegments(value)),
                 nameof(this.MergedSegments));
         }
-
 
         #endregion
 
@@ -76,6 +73,12 @@ namespace LifeDrawingClass.Models
 
         internal void SaveToConfigs() => this.GetSession().SerializeToXml(Configurator.GetLastSessionFileName());
 
+        internal ISession GetSession() => new Session()
+        {
+            ImagePaths = this.ImagePaths,
+            Segments = SessionSegmentModel.ExpandSegments(this.MergedSegments)
+        };
+
         #endregion
 
         #endregion
@@ -90,13 +93,6 @@ namespace LifeDrawingClass.Models
             this._mergedSegments = SessionSegmentModel.MergeSegment(session.Segments);
             this.OnPropertyChanged();
         }
-
-        internal ISession GetSession() => new Session()
-        {
-            ImagePaths = this.ImagePaths,
-            Segments = SessionSegmentModel.ExpandSegments(this.MergedSegments),
-            CurrentSegmentIndex = -1
-        };
 
         #endregion
 

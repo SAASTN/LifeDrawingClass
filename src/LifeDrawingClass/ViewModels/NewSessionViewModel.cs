@@ -27,6 +27,8 @@ namespace LifeDrawingClass.ViewModels
     using CommunityToolkit.Mvvm.ComponentModel;
     using CommunityToolkit.Mvvm.Input;
     using ControlzEx.Theming;
+    using LifeDrawingClass.Business;
+    using LifeDrawingClass.Business.Interfaces;
     using LifeDrawingClass.Core.Image;
     using LifeDrawingClass.Core.Log;
     using LifeDrawingClass.Models;
@@ -149,8 +151,16 @@ namespace LifeDrawingClass.ViewModels
             if (this.SessionModel.ImagePaths.Count > 0)
             {
                 this.SaveConfigs();
-                SlideShowWindow slideShowWindow = new(new SessionModel(this.SessionModel.GetSession()));
+                ISession session = this.SessionModel.GetSession();
+                SlideShowModel model = new(SlideShow.NewSlideShow(session, false));
+                SlideShowViewModel slideShowViewModel = new(model);
+                SlideShowWindow slideShowWindow = new()
+                {
+                    DataContext = slideShowViewModel
+                };
+                slideShowViewModel.RequestCanvasRefresh += slideShowWindow.OnRefreshRequested;
                 slideShowWindow.Show();
+                slideShowViewModel.StartSession();
                 Application.Current?.MainWindow?.Close();
             }
             else

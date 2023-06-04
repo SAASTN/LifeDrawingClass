@@ -70,11 +70,6 @@ namespace LifeDrawingClass.Business
             set => this._segments = value.Cast<SessionSegment>().ToList();
         }
 
-
-        /// <inheritdoc />
-        [DataMember]
-        public int CurrentSegmentIndex { get; set; }
-
         #endregion
 
         #region Methods - Public

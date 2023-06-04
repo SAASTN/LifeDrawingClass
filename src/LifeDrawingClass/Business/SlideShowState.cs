@@ -1,5 +1,5 @@
 ﻿// *****************************************************************************
-//  ISession.cs
+//  SlideShowState.cs
 //   Copyright (C) 2023 SAASTN <saastn@gmail.com>
 //   This file is part of LifeDrawingClass.
 // 
@@ -17,14 +17,17 @@
 //   along with LifeDrawingClass. If not, see <https://www.gnu.org/licenses/>.
 // *****************************************************************************
 
-namespace LifeDrawingClass.Business.Interfaces
+namespace LifeDrawingClass.Business
 {
-    using System.Collections.Generic;
-    using LifeDrawingClass.Core.Serialization;
+    #region Enums
 
-    public interface ISession: ISerializableObject
+    public enum SlideShowState
     {
-        IReadOnlyList<string> ImagePaths { get; }
-        IReadOnlyList<ISessionSegment> Segments { get; set; }
+        NotStarted,
+        Running,
+        Paused,
+        Finished
     }
+
+    #endregion
 }

@@ -22,38 +22,58 @@ namespace LifeDrawingClass.ViewModels
     using System;
     using System.ComponentModel;
     using System.Windows.Threading;
+    using LifeDrawingClass.Business;
     using LifeDrawingClass.Models;
+    using SkiaSharp;
 
     internal class SlideShowViewModel: INotifyPropertyChanged
     {
+        #region Constants & Statics
+
+        private const double SpeedMultiplier = 20.0;
+
+        #endregion
+
         #region Properties & Fields - Non-Public
 
-        private readonly SessionModel _sessionModel;
-
-        private int _currentIndex;
+        private readonly SlideShowModel _model;
+        private readonly DispatcherTimer _timer;
 
         #endregion
 
         #region Constructors
 
-        public SlideShowViewModel(SessionModel sessionModel)
+        public SlideShowViewModel(SlideShowModel slideShowModel)
         {
-            this._sessionModel = sessionModel;
-            DispatcherTimer timer = new()
+            this._model = slideShowModel;
+            this._model.PropertyChanged += this.OnModelPropertyChanged;
+            this._timer = new DispatcherTimer
             {
-                Interval = new TimeSpan(0, 0, 0, 0, 200)
+                Interval = TimeSpan.FromSeconds(1)
             };
-            timer.Tick += this.Timer_Tick;
-            timer.Start();
+            this._timer.Tick += this.TimerTick;
         }
 
         #endregion
 
         #region Properties & Fields - Public
 
-        public int CurrentSegmentIndex;
+        public SlideShowState State => this._model.State;
 
-        public string CurrentImagePath => this._sessionModel.ImagePaths[this._currentIndex];
+        public int CurrentSegmentIndex => this._model.CurrentSegmentIndex;
+
+        #endregion
+
+        #region Methods - Public
+
+        #region Methods Other
+
+        public void StartSession() => this._model.ReStartSession(true);
+
+        public void OnPaintImage(SKCanvas canvas, int width, int height) =>
+            this._model.OnPaintImage(canvas, width, height);
+
+        #endregion
 
         #endregion
 
@@ -61,20 +81,60 @@ namespace LifeDrawingClass.ViewModels
 
         #region Methods Other
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) =>
+            this.OnPropertyChanged(e.PropertyName);
+
+        private void TimerTick(object sender, EventArgs e) => this._model.Tick(SpeedMultiplier);
+
+        private void StartTimer()
         {
-            this._currentIndex = (this._currentIndex + 1) % this._sessionModel.ImagePaths.Count;
-            this.OnPropertyChanged(nameof(this.CurrentImagePath));
+            bool timerEnabled = this._model.State switch
+            {
+                SlideShowState.Running => true,
+                SlideShowState.Paused => true,
+                SlideShowState.NotStarted => false,
+                SlideShowState.Finished => false,
+                _ => throw new InvalidOperationException("Unknown state.")
+            };
+
+            if (this._timer.IsEnabled != timerEnabled)
+            {
+                if (timerEnabled)
+                {
+                    this._timer.Start();
+                }
+                else
+                {
+                    this._timer.Stop();
+                }
+            }
         }
 
-        protected virtual void OnPropertyChanged(string propertyName) =>
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (propertyName == nameof(SlideShowModel.Image))
+            {
+                this.OnRequestCanvasRefresh();
+                return;
+            }
+
+            if (propertyName == nameof(this.State))
+            {
+                this.StartTimer();
+            }
+
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnRequestCanvasRefresh() => this.RequestCanvasRefresh?.Invoke(this, null!);
 
         #endregion
 
         #endregion
 
         #region Events
+
+        public event EventHandler RequestCanvasRefresh;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
